@@ -74,9 +74,7 @@ router.delete('/deleteUser', async (req, res) => {
         const idField = userType === 'patient' ? 'PtID' : 'DocID';
         
         const request = new sql.Request();
-        if(userType === 'patient') {
-        await request.query(`DELETE FROM Patients WHERE PtID = ${userID}`);
-    }
+        await request.query(`DELETE FROM ${table} WHERE ${idField} = ${userID}`);
         
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
