@@ -49,7 +49,6 @@ function PatientDashboardPage() {
 
   const handleCancelAppointment = async (aptId) => {
     console.log('[DEBUG] Cancellation initiated with ID:', aptId);
-    // Fix: Use the actual aptId parameter instead of medicalHistory.aptId
     setCancellingId(aptId);
     setIsLoading(true);
     setError(null);
@@ -65,7 +64,6 @@ function PatientDashboardPage() {
       if (!response.ok) throw new Error(result.error || 'Failed to cancel appointment');
 
       await fetchUserDashboard();
-      // Show success message without error page
       setStatusMessage({ type: 'success', message: 'Appointment cancelled successfully' });
       setTimeout(() => setStatusMessage(null), 3000);
     } catch (error) {
@@ -81,7 +79,6 @@ function PatientDashboardPage() {
     console.log('[DEBUG] Lab test cancellation started');
     console.log('[DEBUG] Full record:', record);
   
-    // Determine the correct ID field based on the record structure
     const testId = record.TestAptID || record.id || record.AptID;
     
     if (!testId) {
@@ -123,7 +120,8 @@ function PatientDashboardPage() {
     setIsEditModalOpen(true);
     setEditValue(userInfo[editField] || '');
   };
-const handleDeleteAccount = async () => {
+
+  const handleDeleteAccount = async () => {
     if (!window.confirm('Are you sure you want to delete your patient account? This action cannot be undone.')) return;
     try {
       const response = await fetch('http://localhost:5000/api/auth/deleteUser', {
@@ -267,35 +265,57 @@ const handleDeleteAccount = async () => {
             letterSpacing: '-0.5px'
           }}>Patient Dashboard</h1>
         </div>
-        <Link to="/home" style={{
-          textDecoration: 'none',
-          color: '#4e73df',
-          fontWeight: '600',
-          padding: '8px 16px',
-          borderRadius: '8px',
-          transition: 'all 0.3s',
-          ':hover': {
-            backgroundColor: '#e9ecef'
-          }
-        }}>
-          ← Back to Home
-        </Link>
-        <button
-          onClick={handleDeleteAccount}
-          style={{
-            backgroundColor: '#e53e3e',
-            color: 'white',
-            border: 'none',
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Link to="/home" style={{
+            textDecoration: 'none',
+            color: '#4e73df',
+            fontWeight: '600',
             padding: '8px 16px',
             borderRadius: '8px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            marginLeft: '20px'
-          }}
-        >
-          Delete Account
-        </button>
-
+            transition: 'all 0.3s',
+            ':hover': {
+              backgroundColor: '#e9ecef'
+            }
+          }}>
+            ← Back to Home
+          </Link>
+          <button
+            onClick={() => navigate('/payment')}
+            style={{
+              backgroundColor: '#9f7aea',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              ':hover': {
+                backgroundColor: '#805ad5'
+              }
+            }}
+          >
+            Payment
+          </button>
+          <button
+            onClick={handleDeleteAccount}
+            style={{
+              backgroundColor: '#e53e3e',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              ':hover': {
+                backgroundColor: '#c53030'
+              }
+            }}
+          >
+            Delete Account
+          </button>
+        </div>
       </header>
 
       {/* Status Message Notification */}
