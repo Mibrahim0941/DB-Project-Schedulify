@@ -308,4 +308,47 @@ router.delete('/deleteTimeSlot', async (req, res) => {
         res.status(500).json({ error: 'Failed to delete time slot' });
     }
 });
+
+router.get('/calculatePayment', async (req, res) => {
+    try {
+        const { PtID } = req.query;
+        if (!PtID) return res.status(400).json({ error: 'Patient ID is required' });
+
+        const request = new sql.Request();
+
+        // Get doctor fees for all booked appointments
+        const doctorFeeQuery = `
+            SELECT ISNULL(SUM(D.Fees), 0) AS TotalDoctorFees
+            FROM Appointments A
+            JOIN Doctors D ON A.DoctorID = D.DocID
+            WHERE A.PtID = @PtID AND A.Status IN ('Scheduled', 'Confirmed')
+        `;
+        request.input('PtID', sql.Int, PtID);
+        const doctorFeesResult = await request.query(doctorFeeQuery);
+        const totalDoctorFees = doctorFeesResult.recordset[0].TotalDoctorFees || 0;
+
+        // Get lab test actual prices from LabTestRevenue
+        const labTestQuery = `
+            SELECT ISNULL(SUM(LTR.ActualPrice), 0) AS TotalLabTestFees
+            FROM LabTestRevenue LTR
+            JOIN TestAppointments TA ON TA.TestID = LTR.TestID AND TA.PtID = LTR.PatientID
+            WHERE LTR.PatientID = @PtID AND TA.Status IN ('Scheduled', 'Confirmed')
+        `;
+        const labTestResult = await request.query(labTestQuery);
+        const totalLabTestFees = labTestResult.recordset[0].TotalLabTestFees || 0;
+
+        const totalAmount = totalDoctorFees + totalLabTestFees;
+
+        res.json({
+            TotalDoctorFees: totalDoctorFees,
+            TotalLabTestFees: totalLabTestFees,
+            TotalAmount: totalAmount
+        });
+
+    } catch (error) {
+        console.error('Payment calculation error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router; 
