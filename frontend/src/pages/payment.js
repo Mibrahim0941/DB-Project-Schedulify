@@ -26,7 +26,7 @@ function PaymentPage() {
 
   const fetchTotals = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/appointment/calculatePayment?PtID=${userId}`);
+      const res = await fetch(`http://localhost:5000/api/appointments/calculatePayment?PtID=${userId}`);
       const data = await res.json();
       setTotals(data);
     } catch (err) {
