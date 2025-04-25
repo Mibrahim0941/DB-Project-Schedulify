@@ -144,7 +144,9 @@ const DoctorDashboard = () => {
     }
   };
 
-  const handleDeleteTimeSlot = async (slotId) => {
+  const handleDeleteTimeSlot = async (slotId,DoctorID) => {
+
+    console.log('slotid:', slotId);
     try {
       const response = await fetch('http://localhost:5000/api/appointments/deleteTimeSlot', {
         method: 'DELETE',
@@ -152,7 +154,8 @@ const DoctorDashboard = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          SlotID: slotId
+          SlotID: slotId,
+          DocID: DoctorID
         })
       });
 
@@ -168,6 +171,7 @@ const DoctorDashboard = () => {
       setSuccessMessage('Time slot deleted successfully!');
       setTimeout(() => {
         setSuccessMessage('');
+        navigate('/doctor-dashboard');
       }, 2000);
     } catch (error) {
       console.error('Error deleting time slot:', error);
@@ -314,7 +318,7 @@ const handleDeleteAccount = async () => {
                     <span className="slot-time">{slot.TimeSlot}</span>
                     <button 
                       className="delete-slot-button"
-                      onClick={() => handleDeleteTimeSlot(slot.TimeSlotID)}
+                      onClick={() => handleDeleteTimeSlot(slot.SlotID,doctorId)}
                     >
                       Delete
                     </button>

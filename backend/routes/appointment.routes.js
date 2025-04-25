@@ -275,4 +275,37 @@ router.post('/addTimeSlot', async (req, res) => {
     }
 });
 
+router.delete('/deleteTimeSlot', async (req, res) => {
+    try {
+        const { DocID, SlotID } = req.body;
+
+        if (!DocID || !SlotID) {
+            return res.status(400).json({ error: 'Missing required fields (DocID, SlotID)' });
+        }
+
+        const request = new sql.Request();
+        request.input('DocID', sql.Int, DocID);
+        request.input('SlotID', sql.Int, SlotID);
+
+        const checkResult = await request.query(`
+            SELECT 1 FROM TimeSlots 
+            WHERE SlotID = @SlotID AND DocID = @DocID
+        `);
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({ error: 'Time slot not found or does not belong to the specified doctor' });
+        }
+
+        // Delete the time slot
+        await request.query(`
+            DELETE FROM TimeSlots 
+            WHERE SlotID = @SlotID AND DocID = @DocID
+        `);
+
+        res.status(200).json({ message: 'Time slot deleted successfully!' });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ error: 'Failed to delete time slot' });
+    }
+});
 module.exports = router; 

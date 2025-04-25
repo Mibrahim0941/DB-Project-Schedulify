@@ -49,7 +49,6 @@ function PatientDashboardPage() {
 
   const handleCancelAppointment = async (aptId) => {
     console.log('[DEBUG] Cancellation initiated with ID:', aptId);
-    console.log('yele mar le ');
     // Fix: Use the actual aptId parameter instead of medicalHistory.aptId
     setCancellingId(aptId);
     setIsLoading(true);
