@@ -4,6 +4,7 @@ function PaymentPage() {
   const [history, setHistory] = useState([]);
   const [totals, setTotals] = useState({ TotalDoctorFees: 0, TotalLabTestFees: 0, TotalAmount: 0 });
   const [selectedMethod, setSelectedMethod] = useState('JazzCash');
+  const [accountNumber, setAccountNumber] = useState('');
   const [receiptVisible, setReceiptVisible] = useState(false);
 
   const userId = localStorage.getItem('userId');
@@ -35,6 +36,10 @@ function PaymentPage() {
   };
 
   const handlePayNow = () => {
+    if (!accountNumber.trim()) {
+      alert('Please enter your account number to proceed with payment.');
+      return;
+    }
     setReceiptVisible(true);
   };
 
@@ -82,6 +87,16 @@ function PaymentPage() {
           <option value="BankTransfer">Bank Transfer</option>
         </select>
 
+        <label htmlFor="accountNumber" style={{ fontWeight: 'bold', marginBottom: '10px', display: 'block', color: '#2c5282' }}>Account Number:</label>
+        <input
+          id="accountNumber"
+          type="text"
+          value={accountNumber}
+          onChange={e => setAccountNumber(e.target.value)}
+          placeholder="Enter your account number"
+          style={{ padding: '12px', width: '100%', borderRadius: '10px', border: '1px solid #cbd5e0', marginBottom: '20px', fontSize: '16px', backgroundColor: '#ffffff' }}
+        />
+
         <button
           onClick={handlePayNow}
           style={{ backgroundColor: '#4299e1', color: 'white', padding: '14px 28px', border: 'none', borderRadius: '10px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', width: '100%', transition: 'background 0.3s' }}
@@ -98,8 +113,10 @@ function PaymentPage() {
           <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '12px', marginTop: '20px', color: '#2d3748', fontSize: '16px' }}>
             <p><strong>Patient ID:</strong> {userId}</p>
             <p><strong>Method:</strong> {selectedMethod}</p>
+            <p><strong>Account Number:</strong> {accountNumber}</p>
             <p><strong>Total Paid:</strong> Rs. {totals.TotalAmount}</p>
             <p><strong>Date:</strong> {new Date().toLocaleDateString()}</p>
+            <p style={{ marginTop: '20px', fontWeight: 'bold', color: '#2b6cb0' }}>Schedulify</p>
           </div>
         </div>
       )}
