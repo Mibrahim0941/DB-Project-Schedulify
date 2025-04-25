@@ -315,19 +315,19 @@ router.get('/calculatePayment', async (req, res) => {
         if (!PtID) return res.status(400).json({ error: 'Patient ID is required' });
 
         const request = new sql.Request();
+        request.input('PtID', sql.Int, PtID);
 
-        // Get doctor fees for all booked appointments
+        // Get doctor fees
         const doctorFeeQuery = `
             SELECT ISNULL(SUM(D.Fees), 0) AS TotalDoctorFees
             FROM Appointments A
             JOIN Doctors D ON A.DoctorID = D.DocID
             WHERE A.PtID = @PtID AND A.Status IN ('Scheduled', 'Confirmed')
         `;
-        request.input('PtID', sql.Int, PtID);
         const doctorFeesResult = await request.query(doctorFeeQuery);
         const totalDoctorFees = doctorFeesResult.recordset[0].TotalDoctorFees || 0;
 
-        // Get lab test actual prices from LabTestRevenue
+        // Get lab test fees
         const labTestQuery = `
             SELECT ISNULL(SUM(LTR.ActualPrice), 0) AS TotalLabTestFees
             FROM LabTestRevenue LTR
@@ -338,6 +338,17 @@ router.get('/calculatePayment', async (req, res) => {
         const totalLabTestFees = labTestResult.recordset[0].TotalLabTestFees || 0;
 
         const totalAmount = totalDoctorFees + totalLabTestFees;
+
+        // Insert into Payments table
+        const insertRequest = new sql.Request();
+        insertRequest.input('PatientID', sql.Int, PtID);
+        insertRequest.input('Amount', sql.Int, totalAmount);
+        insertRequest.input('Status', sql.VarChar, 'Completed');
+
+        await insertRequest.query(`
+            INSERT INTO Payments (PatientID, Amount, Status)
+            VALUES (@PatientID, @Amount, @Status)
+        `);
 
         res.json({
             TotalDoctorFees: totalDoctorFees,
@@ -351,4 +362,26 @@ router.get('/calculatePayment', async (req, res) => {
     }
 });
 
+router.get('/paymentshistory', async (req, res) => {
+    try {
+      const { PtID } = req.query;
+      if (!PtID) return res.status(400).json({ error: 'Patient ID is required' });
+  
+      const request = new sql.Request();
+      request.input('PtID', sql.Int, PtID);
+  
+      const result = await request.query(`
+        SELECT PaymentID, Amount, Status
+        FROM Payments
+        WHERE PatientID = @PtID
+        ORDER BY PaymentID DESC
+      `);
+  
+      res.json(result.recordset);
+    } catch (error) {
+      console.error('Error fetching payment history:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
 module.exports = router; 
