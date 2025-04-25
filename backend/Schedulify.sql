@@ -168,8 +168,8 @@ USE Schedulify;
     --Payment TABLE
 	CREATE TABLE Payments (
     PaymentID int IDENTITY(1,1) PRIMARY KEY,
-    AppointmentID int NOT NULL FOREIGN KEY REFERENCES Appointments(AptID) ON DELETE CASCADE,
     PatientID int NOT NULL FOREIGN KEY REFERENCES Patients(PtID) ,
+	Amount int,
     Status varchar(20) NOT NULL DEFAULT 'Pending' 
         CHECK (Status IN ('Pending', 'Completed', 'Failed', 'Refunded'))
 	);
