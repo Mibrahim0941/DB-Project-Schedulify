@@ -173,7 +173,28 @@ USE Schedulify;
     Status varchar(20) NOT NULL DEFAULT 'Pending' 
         CHECK (Status IN ('Pending', 'Completed', 'Failed', 'Refunded'))
 	);
+    -- Create Admin table
+	CREATE TABLE Admins (
+    AdminID int DEFAULT 1 PRIMARY KEY,
+    AdminName varchar(255) NOT NULL,
+    AdminEmail varchar(255) UNIQUE CHECK (
+        PATINDEX('%_%@_%._%', AdminEmail) > 0
+        AND AdminEmail NOT LIKE '%@%@%'
+        AND AdminEmail NOT LIKE '%.@%'
+        AND AdminEmail NOT LIKE '%..%'
+    ),
+    PhoneNum char(20),
+    AdminPFP varchar(255),
+    IsSuperAdmin bit DEFAULT 0,
+    IsActive bit DEFAULT 1
+	);
 
+	-- Admin passwords table
+	CREATE TABLE AdminPasswords (
+    PassID int PRIMARY KEY IDENTITY(1,1),
+    AdminID int FOREIGN KEY REFERENCES Admins(AdminID) ON DELETE CASCADE,
+    PassHash varbinary(64) NOT NULL,
+	);
 --------------------------------------------------------------------------------------------
 
 --DATA TO POPULATE TABLES--
@@ -921,6 +942,35 @@ JOIN Departments Dept ON D.DeptID = Dept.DeptID
             SELECT DocID, DocName, Specialization, Rating, DeptID, DeptName
             FROM RankedDoctors
             WHERE Rank = 1
+
+-- Admin Login
+GO
+CREATE OR ALTER PROCEDURE AdminLogin
+    @Email VARCHAR(255),
+    @Password VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @HashedPassword VARBINARY(64) = HASHBYTES('SHA2_256', @Password);
+    DECLARE @AdminID INT;
+    
+    SELECT @AdminID = 1
+    FROM Admins A
+    JOIN AdminPasswords AP ON A.AdminID = AP.AdminID
+    WHERE A.AdminEmail = @Email 
+      AND AP.PassHash = @HashedPassword
+      AND A.IsActive = 1;
+    -- Return admin info (without sensitive data)
+    SELECT 
+        AdminID,
+        AdminName,
+        AdminEmail,
+        IsSuperAdmin
+    FROM Admins
+    WHERE AdminID = @AdminID;
+END;
+GO
 
 
 SeLECT * FrOM LabTestRevenue
