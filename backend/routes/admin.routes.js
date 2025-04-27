@@ -35,5 +35,4 @@ router.get('/adminprofile', async (req, res) => {
         });
     }
 });
-
 module.exports = router ;
