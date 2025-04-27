@@ -11,21 +11,31 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const endpoint = userType === 'admin' 
+        ? 'http://localhost:5000/api/auth/adminlogin' 
+        : 'http://localhost:5000/api/auth/login';
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userType, email: username, password }),
+        body: JSON.stringify({ 
+          userType: userType === 'admin' ? undefined : userType, // Don't send userType for admin
+          email: username, 
+          password 
+        }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('userId', data.userID);
+        localStorage.setItem('userId', data.userID || data.adminId);
         localStorage.setItem('userType', userType);
         
         if (userType === 'patient') {
           navigate('/home');
         } else if (userType === 'doctor') {
           navigate('/doctorhome');
+        } else if (userType === 'admin') {
+          navigate('/Admin'); 
         }
       } else {
         alert(data.error || 'Access denied');
@@ -141,6 +151,7 @@ function LoginPage() {
           >
             <option value="patient">Patient Access</option>
             <option value="doctor">Medical Professional</option>
+            <option value="admin">Administrator</option>
           </select>
         </div>
 

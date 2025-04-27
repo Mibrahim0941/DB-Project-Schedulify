@@ -178,7 +178,6 @@ function PaymentPage() {
           </div>
         </>
       )}
-
       {receiptVisible && (
         <div style={{ backgroundColor: '#e6f7ff', padding: '30px', margin: '30px auto', maxWidth: '600px', borderRadius: '16px', textAlign: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', animation: 'fadeIn 0.5s ease-in-out' }}>
           <h2 style={{ color: '#2c5282' }}>🎉 Payment Successful!</h2>

@@ -61,6 +61,50 @@ router.post("/login", async (req, res) => {
     }
 });
 
+//login for admin
+router.post("/adminlogin", async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    try {
+        const request = new sql.Request();
+        
+        // Input parameters
+        request.input("Email", sql.VarChar(255), email);
+        request.input("Password", sql.VarChar(255), password);
+
+        // Execute the stored procedure
+        const result = await request.execute("AdminLogin");
+
+        if (result.recordset.length === 0) {
+            return res.status(401).json({ error: "Invalid credentials" });
+        }
+
+        const admin = result.recordset[0];
+        res.status(200).json({
+            message: "Admin login successful",
+            adminId: admin.AdminID,
+            name: admin.AdminName,
+            email: admin.AdminEmail,
+            isSuperAdmin: admin.IsSuperAdmin
+        });
+
+    } catch (error) {
+        console.error("Error during admin login:", error);
+        
+        if (error.message.includes("Invalid email or password")) {
+            return res.status(401).json({ error: "Invalid credentials" });
+        }
+        
+        res.status(500).json({ 
+            error: "Internal Server Error",
+            details: error.message 
+        });
+    }
+});
 // Delete user
 router.delete('/deleteUser', async (req, res) => {
     try {

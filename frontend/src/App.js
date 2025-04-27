@@ -12,7 +12,7 @@ import DoctorHome from './pages/DoctorHome'; // Import the new DoctorHome compon
 import DoctorDashboard from './pages/DoctorDashboard'; 
 import LabTest from './pages/LabTests';
 import Payment from './pages/payment';
-
+import admindashboard from './pages/AdminDashboard';
 
 function App() {
   const isLoggedIn = localStorage.getItem('userId') !== null;
@@ -35,6 +35,7 @@ function App() {
       <Route path="/doctorhome" element={<DoctorHome /> } />
       <Route path="/doctor-dashboard" element={<DoctorDashboard /> } />
       <Route path="/payment" element={<Payment /> } />
+      <Route path="Admin" element ={<admindashboard />} />
     </Routes>
   );
 }
