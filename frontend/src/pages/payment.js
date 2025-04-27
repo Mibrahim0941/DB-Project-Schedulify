@@ -38,15 +38,38 @@ function PaymentPage() {
     }
   };
 
-  const handlePayNow = () => {
+  const handlePayNow = async () => {
     if (!accountNumber.trim()) {
       alert('Please enter your account number to proceed with payment.');
       return;
     }
 
-    setReceiptVisible(true);
-    setAlreadyPaid(true);
-    setTotals({ TotalDoctorFees: 0, TotalLabTestFees: 0, TotalAmount: 0 });
+    try {
+      // Process the payment
+      const response = await fetch('http://localhost:5000/api/appointments/processPayment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          PatientID: userId,
+          Amount: totals.TotalAmount
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setReceiptVisible(true);
+        setAlreadyPaid(true);
+        setTotals({ TotalDoctorFees: 0, TotalLabTestFees: 0, TotalAmount: 0 });
+      } else {
+        alert(`Payment failed: ${result.error || 'Unknown error'}`);
+      }
+    } catch (err) {
+      console.error('Payment processing error:', err);
+      alert('Failed to process payment. Please try again.');
+    }
   };
 
   const fetchPaymentHistory = async () => {
