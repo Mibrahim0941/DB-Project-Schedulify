@@ -1,29 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserShield, FaChartLine, FaUserMd, FaCalendarAlt, FaFlask, FaCog } from 'react-icons/fa';
+import { FaUserShield, FaUserMd, FaFlask, FaMoneyBillWave, FaUserCog, FaHospital, FaUserNurse, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+
 const AdminDashboard = () => {
-  const [adminData, setAdminData] = useState(null);
-  const [stats, setStats] = useState({
-    doctors: 0,
-    departments: 0,
-    labTests: 0,
-    appointments: 0
-  });
-  const [loading, setLoading] = useState(true);
-  const [showLabTestModal, setShowLabTestModal] = useState(false);
-  const [showDeptModal, setShowDeptModal] = useState(false);
-  const [newLabTest, setNewLabTest] = useState({
-    testName: '',
-    price: '',
-    description: ''
-  });
-  const [newDepartment, setNewDepartment] = useState({
-    deptName: '',
-    description: ''
-  });
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
+    const [adminData, setAdminData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAdminProfile = async () => {
@@ -33,7 +15,7 @@ const AdminDashboard = () => {
                         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                     }
                 });
-                
+
                 if (!response.ok) throw new Error('Failed to fetch profile');
                 
                 const data = await response.json();
@@ -46,187 +28,423 @@ const AdminDashboard = () => {
             }
         };
 
-    fetchData();
-  }, [navigate]);
-
-  const handleAddLabTest = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/labtests/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
-        body: JSON.stringify(newLabTest)
-      });
-      
-      if (!response.ok) throw new Error('Failed to add lab test');
-      
-      const data = await response.json();
-      setSuccessMessage('Lab test added successfully!');
-      setShowLabTestModal(false);
-      setStats(prev => ({...prev, labTests: prev.labTests + 1}));
-      setNewLabTest({ testName: '', price: '', description: '' });
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Failed to add lab test');
-    }
-  };
-
-  const handleAddDepartment = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/departments/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
-        body: JSON.stringify(newDepartment)
-      });
-      
-      if (!response.ok) throw new Error('Failed to add department');
-      
-      const data = await response.json();
-      setSuccessMessage('Department added successfully!');
-      setShowDeptModal(false);
-      setStats(prev => ({...prev, departments: prev.departments + 1}));
-      setNewDepartment({ deptName: '', description: '' });
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Failed to add department');
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    navigate('/admin/login');
-  };
+        fetchAdminProfile();
+    }, [navigate]);
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div style={{ 
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '100vh',
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+            }}>
+                <div style={{
+                    width: '50px',
+                    height: '50px',
+                    border: '5px solid #4e73df',
+                    borderTopColor: 'transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                }}></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div style={{
+            minHeight: '100vh',
+            backgroundColor: '#f8f9fa',
+            fontFamily: "'Inter', sans-serif"
+        }}>
             {/* Header */}
-            <header className="bg-white shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-blue-800 flex items-center">
-                        <FaUserShield className="mr-2" /> Schedulify Admin
-                    </h1>
-                    <div className="flex items-center space-x-4">
-                        <div className="flex items-center">
-                            <img 
-                                src={adminData.AdminPFP || '/default-admin.png'} 
-                                alt="Admin" 
-                                className="h-8 w-8 rounded-full"
-                            />
-                            <span className="ml-2 text-gray-700">{adminData.AdminName}</span>
+            <header style={{
+                backgroundColor: 'white',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+                position: 'sticky',
+                top: 0,
+                zIndex: 100,
+                padding: '20px 40px'
+            }}>
+                <div style={{
+                    maxWidth: '1400px',
+                    margin: '0 auto',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px'
+                    }}>
+                        <div style={{
+                            width: '40px',
+                            height: '40px',
+                            backgroundColor: '#4e73df',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: '20px'
+                        }}>
+                            <FaUserShield />
                         </div>
-                        <button 
+                        <h1 style={{
+                            margin: 0,
+                            fontSize: '22px',
+                            fontWeight: '700',
+                            color: '#2d3748',
+                            letterSpacing: '-0.5px'
+                        }}>Schedulify Admin Portal</h1>
+                    </div>
+                    
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '15px'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            backgroundColor: '#edf2f7',
+                            padding: '8px 15px',
+                            borderRadius: '50px',
+                            cursor: 'pointer'
+                        }}>
+                            <img 
+                                src={adminData.AdminPFP || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} 
+                                alt="Admin" 
+                                style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    border: '2px solid white'
+                                }}
+                            />
+                            <span style={{
+                                fontWeight: '600',
+                                color: '#2d3748',
+                                fontSize: '14px'
+                            }}>{adminData.AdminName}</span>
+                        </div>
+                        <button
                             onClick={() => {
                                 localStorage.removeItem('adminToken');
-                                navigate('/admin/login');
+                                navigate('/admin');
                             }}
-                            className="text-sm text-red-600 hover:text-red-800"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                backgroundColor: '#fff5f5',
+                                color: '#e53e3e',
+                                border: 'none',
+                                padding: '8px 16px',
+                                borderRadius: '8px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s',
+                                ':hover': {
+                                    backgroundColor: '#fed7d7'
+                                }
+                            }}
                         >
-                            Logout
+                            <FaSignOutAlt /> Logout
                         </button>
                     </div>
                 </div>
             </header>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {/* Sidebar */}
-                    <div className="md:col-span-1">
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <div className="text-center mb-6">
+            <main style={{
+                maxWidth: '1400px',
+                margin: '0 auto',
+                padding: '30px 40px'
+            }}>
+                {/* Welcome Section */}
+                <section style={{
+                    backgroundColor: 'white',
+                    borderRadius: '12px',
+                    padding: '25px 30px',
+                    marginBottom: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
+                    borderLeft: '4px solid #4e73df'
+                }}>
+                    <h2 style={{
+                        margin: '0 0 10px',
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: '#2d3748'
+                    }}>Welcome back, {adminData.AdminName}!</h2>
+                    <p style={{
+                        margin: 0,
+                        color: '#718096',
+                        fontSize: '15px'
+                    }}>You have full administrative control over the Schedulify platform.</p>
+                </section>
+
+                {/* Profile Section */}
+                <section style={{
+                    backgroundColor: 'white',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    marginBottom: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)'
+                }}>
+                    <div style={{
+                        backgroundColor: '#f8fafc',
+                        padding: '15px 25px',
+                        borderBottom: '1px solid #edf2f7'
+                    }}>
+                        <h3 style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: '600',
+                            color: '#4a5568'
+                        }}>Admin Profile</h3>
+                    </div>
+                    <div style={{
+                        padding: '25px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '25px'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '25px',
+                            flexWrap: 'wrap'
+                        }}>
+                            <div style={{ position: 'relative' }}>
                                 <img 
-                                    src={adminData.AdminPFP || '/default-admin.png'} 
+                                    src={adminData.AdminPFP || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} 
                                     alt="Admin" 
-                                    className="h-24 w-24 rounded-full mx-auto mb-3"
+                                    style={{
+                                        width: '120px',
+                                        height: '120px',
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                        border: '4px solid #edf2f7',
+                                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
+                                    }}
                                 />
-                                <h2 className="text-lg font-semibold text-gray-800">{adminData.AdminName}</h2>
-                                <p className="text-sm text-gray-500">{adminData.AdminEmail}</p>
-                                <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    {adminData.IsSuperAdmin ? 'Super Admin' : 'Admin'}
-                                </span>
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '10px',
+                                    right: '10px',
+                                    width: '20px',
+                                    height: '20px',
+                                    backgroundColor: '#48bb78',
+                                    borderRadius: '50%',
+                                    border: '2px solid white'
+                                }}></div>
                             </div>
-
-                            <nav className="space-y-1">
-                                <button className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-blue-600">
-                                    <FaChartLine className="mr-2" /> Dashboard
-                                </button>
-                                <button className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <FaUserMd className="mr-2" /> Doctors
-                                </button>
-                                <button className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <FaCalendarAlt className="mr-2" /> Appointments
-                                </button>
-                                <button className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <FaFlask className="mr-2" /> Lab Tests
-                                </button>
-                                <button className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <FaCog className="mr-2" /> Settings
-                                </button>
-                            </nav>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                                gap: '20px',
+                                flex: 1
+                            }}>
+                                <ProfileInfoItem 
+                                    label="Full Name" 
+                                    value={adminData.AdminName} 
+                                    icon={<FaUserShield style={{ color: '#4e73df' }} />}
+                                />
+                                <ProfileInfoItem 
+                                    label="Email" 
+                                    value={adminData.AdminEmail} 
+                                    icon={<FaUserCog style={{ color: '#4e73df' }} />}
+                                />
+                                <ProfileInfoItem 
+                                    label="Role" 
+                                    value={adminData.IsSuperAdmin ? 'Super Administrator' : 'Administrator'} 
+                                    icon={<FaUserShield style={{ color: '#4e73df' }} />}
+                                />
+                                <ProfileInfoItem 
+                                    label="Last Login" 
+                                    value={new Date().toLocaleString()} 
+                                    icon={<FaChartLine style={{ color: '#4e73df' }} />}
+                                />
+                            </div>
                         </div>
                     </div>
+                </section>
 
-                    {/* Dashboard Content */}
-                    <div className="md:col-span-3">
-                        <div className="bg-white rounded-lg shadow overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-200">
-                                <h3 className="text-lg font-medium text-gray-900">Admin Dashboard</h3>
-                            </div>
-                            <div className="p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                    {/* Stats Cards */}
-                                    <div className="bg-blue-50 rounded-lg p-4">
-                                        <h4 className="text-sm font-medium text-blue-800">Total Doctors</h4>
-                                        <p className="mt-1 text-3xl font-semibold text-blue-600">42</p>
-                                    </div>
-                                    <div className="bg-green-50 rounded-lg p-4">
-                                        <h4 className="text-sm font-medium text-green-800">Today's Appointments</h4>
-                                        <p className="mt-1 text-3xl font-semibold text-green-600">127</p>
-                                    </div>
-                                    <div className="bg-purple-50 rounded-lg p-4">
-                                        <h4 className="text-sm font-medium text-purple-800">Pending Approvals</h4>
-                                        <p className="mt-1 text-3xl font-semibold text-purple-600">8</p>
-                                    </div>
+                {/* Quick Stats */}
+                <section style={{
+                    backgroundColor: 'white',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    marginBottom: '30px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)'
+                }}>
+                    <div style={{
+                        backgroundColor: '#f8fafc',
+                        padding: '15px 25px',
+                        borderBottom: '1px solid #edf2f7'
+                    }}>
+                        <h3 style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: '600',
+                            color: '#4a5568'
+                        }}>System Overview</h3>
+                    </div>
+                    <div style={{
+                        padding: '20px',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        gap: '20px'
+                    }}>
+                        {[
+                            { title: "Total Doctors", value: 24, icon: <FaUserMd style={{ color: '#4e73df', fontSize: '24px' }} /> },
+                            { title: "Active Appointments", value: 156, icon: <FaHospital style={{ color: '#4e73df', fontSize: '24px' }} /> },
+                            { title: "Pending Approvals", value: 5, icon: <FaFlask style={{ color: '#4e73df', fontSize: '24px' }} /> },
+                        ].map((stat, idx) => (
+                            <div key={idx} style={{
+                                backgroundColor: '#f8fafc',
+                                borderRadius: '10px',
+                                padding: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '15px',
+                                border: '1px solid #e2e8f0',
+                                transition: 'all 0.3s',
+                                ':hover': {
+                                    transform: 'translateY(-3px)',
+                                    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.05)'
+                                }
+                            }}>
+                                <div style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    backgroundColor: '#ebf4ff',
+                                    borderRadius: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    {stat.icon}
                                 </div>
-
-                                {/* Recent Activity */}
                                 <div>
-                                    <h4 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h4>
-                                    <div className="space-y-4">
-                                        {[1, 2, 3].map((item) => (
-                                            <div key={item} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                                                <p className="text-sm text-gray-600">New doctor registration approved</p>
-                                                <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <p style={{
+                                        margin: '0 0 5px',
+                                        color: '#718096',
+                                        fontSize: '14px',
+                                        fontWeight: '500'
+                                    }}>{stat.title}</p>
+                                    <p style={{
+                                        margin: 0,
+                                        color: '#2d3748',
+                                        fontSize: '24px',
+                                        fontWeight: '700'
+                                    }}>{stat.value}</p>
                                 </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
-                </div>
+                </section>
+
+                {/* Action Cards */}
+                <section>
+                    <div style={{
+                        backgroundColor: '#f8fafc',
+                        padding: '15px 25px',
+                        marginBottom: '20px',
+                        borderRadius: '12px 12px 0 0',
+                        borderBottom: '1px solid #edf2f7'
+                    }}>
+                        <h3 style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: '600',
+                            color: '#4a5568'
+                        }}>Administrative Actions</h3>
+                    </div>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                        gap: '20px'
+                    }}>
+                        {[
+                            { icon: <FaHospital style={{ fontSize: '24px' }} />, title: "Manage Departments", desc: "Add, edit, and organize medical departments", color: '#4e73df' },
+                            { icon: <FaFlask style={{ fontSize: '24px' }} />, title: "Manage Laboratory", desc: "Configure lab tests and equipment", color: '#38a169' },
+                            { icon: <FaUserMd style={{ fontSize: '24px' }} />, title: "Manage Doctors", desc: "View and manage all doctors", color: '#9f7aea' },
+                            { icon: <FaUserNurse style={{ fontSize: '24px' }} />, title: "Manage Lab Technicians", desc: "Configure lab staff and schedules", color: '#ed8936' },
+                            { icon: <FaMoneyBillWave style={{ fontSize: '24px' }} />, title: "Manage Revenue", desc: "View financial reports and analytics", color: '#805ad5' },
+                            { icon: <FaUserCog style={{ fontSize: '24px' }} />, title: "Edit Profile", desc: "Update your admin profile information", color: '#3182ce' },
+                        ].map((item, idx) => (
+                            <div key={idx} style={{
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                                padding: '25px',
+                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
+                                border: '1px solid #e2e8f0',
+                                transition: 'all 0.3s',
+                                cursor: 'pointer',
+                                ':hover': {
+                                    transform: 'translateY(-5px)',
+                                    boxShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
+                                    borderColor: item.color
+                                }
+                            }}>
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    textAlign: 'center',
+                                    gap: '15px'
+                                }}>
+                                    <div style={{
+                                        width: '60px',
+                                        height: '60px',
+                                        backgroundColor: `${item.color}20`,
+                                        borderRadius: '15px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: item.color
+                                    }}>
+                                        {item.icon}
+                                    </div>
+                                    <h3 style={{
+                                        margin: 0,
+                                        fontSize: '18px',
+                                        fontWeight: '700',
+                                        color: '#2d3748'
+                                    }}>{item.title}</h3>
+                                    <p style={{
+                                        margin: 0,
+                                        color: '#718096',
+                                        fontSize: '14px',
+                                        lineHeight: '1.5'
+                                    }}>{item.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
             </main>
 
             {/* Footer */}
-            <footer className="bg-white border-t border-gray-200 mt-8">
-                <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
+            <footer style={{
+                backgroundColor: 'white',
+                borderTop: '1px solid #e2e8f0',
+                padding: '20px 40px',
+                marginTop: '40px'
+            }}>
+                <div style={{
+                    maxWidth: '1400px',
+                    margin: '0 auto',
+                    textAlign: 'center',
+                    color: '#718096',
+                    fontSize: '14px'
+                }}>
                     © {new Date().getFullYear()} Schedulify Admin Portal. All rights reserved.
                 </div>
             </footer>
