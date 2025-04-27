@@ -339,17 +339,6 @@ router.get('/calculatePayment', async (req, res) => {
 
         const totalAmount = totalDoctorFees + totalLabTestFees;
 
-        // Insert into Payments table
-        const insertRequest = new sql.Request();
-        insertRequest.input('PatientID', sql.Int, PtID);
-        insertRequest.input('Amount', sql.Int, totalAmount);
-        insertRequest.input('Status', sql.VarChar, 'Completed');
-
-        await insertRequest.query(`
-            INSERT INTO Payments (PatientID, Amount, Status)
-            VALUES (@PatientID, @Amount, @Status)
-        `);
-
         res.json({
             TotalDoctorFees: totalDoctorFees,
             TotalLabTestFees: totalLabTestFees,
@@ -383,5 +372,35 @@ router.get('/paymentshistory', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  
+  router.post('/processPayment', async (req, res) => {
+    try {
+        const { PatientID, Amount } = req.body;
+
+        if (!PatientID || !Amount) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Patient ID and amount are required' 
+            });
+        }
+        const request = new sql.Request();
+        
+        // Input parameters
+        request.input('PatientID', sql.Int, PatientID);
+        request.input('Amount', sql.Decimal(10, 2), Amount);
+        request.input('Status', sql.VarChar(20), 'Completed');
+
+        const result = await request.query(`
+            INSERT INTO Payments (PatientID, Amount, Status)
+            VALUES (@PatientID, @Amount, @Status)
+        `);
+
+    } catch (error) {
+        console.error('Payment processing error:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to process payment',
+            details: error.message 
+        });
+    }
+});
 module.exports = router; 
