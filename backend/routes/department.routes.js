@@ -94,4 +94,22 @@ router.get('/alldepartments', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.post('/addDepartment', async (req, res) => {
+    try {
+        const { DeptName } = req.body;
+        
+        if (!DeptName) return res.status(400).json({ error: 'Department name is required' });
+
+        const request = new sql.Request();
+        const result = await request.query(`
+            INSERT INTO Departments (DeptName, Doc_Count) 
+            VALUES ('${DeptName}', 0)
+        `);
+
+        res.json({ message: 'Department added successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 module.exports = router; 

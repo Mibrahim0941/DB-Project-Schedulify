@@ -276,123 +276,179 @@ const AdminDashboard = () => {
                 </section>
 
                 {/* Quick Stats */}
-                <section style={{
+                {/* Action Cards */}
+<section>
+    <div style={{
+        backgroundColor: '#f8fafc',
+        padding: '15px 25px',
+        marginBottom: '20px',
+        borderRadius: '12px 12px 0 0',
+        borderBottom: '1px solid #edf2f7'
+    }}>
+        <h3 style={{
+            margin: 0,
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#4a5568'
+        }}>Administrative Actions</h3>
+    </div>
+    <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: '20px'
+    }}>
+        {[
+            { 
+                icon: <FaHospital style={{ fontSize: '24px' }} />, 
+                title: "Manage Departments", 
+                desc: "Add, edit, and organize medical departments", 
+                color: '#4e73df',
+                path: '/admin/departments'
+            },
+            { 
+                icon: <FaFlask style={{ fontSize: '24px' }} />, 
+                title: "Manage Laboratory", 
+                desc: "Configure lab tests and equipment", 
+                color: '#38a169',
+                path: '/admin/laboratory'
+            },
+            { 
+                icon: <FaUserMd style={{ fontSize: '24px' }} />, 
+                title: "Manage Doctors", 
+                desc: "View and manage all doctors", 
+                color: '#9f7aea',
+                path: '/admin/doctors'
+            },
+            { 
+                icon: <FaUserNurse style={{ fontSize: '24px' }} />, 
+                title: "Manage Lab Technicians", 
+                desc: "Configure lab staff and schedules", 
+                color: '#ed8936',
+                path: '/admin/technicians'
+            },
+            { 
+                icon: <FaMoneyBillWave style={{ fontSize: '24px' }} />, 
+                title: "Manage Revenue", 
+                desc: "View financial reports and analytics", 
+                color: '#805ad5',
+                path: '/admin/revenue'
+            },
+            { 
+                icon: <FaUserCog style={{ fontSize: '24px' }} />, 
+                title: "Edit Profile", 
+                desc: "Update your admin profile information", 
+                color: '#3182ce',
+                path: '/admin/profile'
+            },
+        ].map((item, idx) => (
+            <div 
+                key={idx} 
+                onClick={() => navigate(item.path)}
+                style={{
                     backgroundColor: 'white',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    marginBottom: '30px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)'
+                    borderRadius: '10px',
+                    padding: '25px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
+                    border: '1px solid #e2e8f0',
+                    transition: 'all 0.3s',
+                    cursor: 'pointer',
+                    ':hover': {
+                        transform: 'translateY(-5px)',
+                        boxShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
+                        borderColor: item.color
+                    }
+                }}
+            >
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    gap: '15px'
                 }}>
                     <div style={{
-                        backgroundColor: '#f8fafc',
-                        padding: '15px 25px',
-                        borderBottom: '1px solid #edf2f7'
+                        width: '60px',
+                        height: '60px',
+                        backgroundColor: `${item.color}20`,
+                        borderRadius: '15px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: item.color
                     }}>
-                        <h3 style={{
-                            margin: 0,
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            color: '#4a5568'
-                        }}>System Overview</h3>
+                        {item.icon}
                     </div>
-                    <div style={{
-                        padding: '20px',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '20px'
-                    }}>
-                        {[
-                            { title: "Total Doctors", value: 24, icon: <FaUserMd style={{ color: '#4e73df', fontSize: '24px' }} /> },
-                            { title: "Active Appointments", value: 156, icon: <FaHospital style={{ color: '#4e73df', fontSize: '24px' }} /> },
-                            { title: "Pending Approvals", value: 5, icon: <FaFlask style={{ color: '#4e73df', fontSize: '24px' }} /> },
-                        ].map((stat, idx) => (
-                            <div key={idx} style={{
-                                backgroundColor: '#f8fafc',
-                                borderRadius: '10px',
-                                padding: '20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '15px',
-                                border: '1px solid #e2e8f0',
-                                transition: 'all 0.3s',
-                                ':hover': {
-                                    transform: 'translateY(-3px)',
-                                    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.05)'
-                                }
-                            }}>
-                                <div style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    backgroundColor: '#ebf4ff',
-                                    borderRadius: '12px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                    {stat.icon}
-                                </div>
-                                <div>
-                                    <p style={{
-                                        margin: '0 0 5px',
-                                        color: '#718096',
-                                        fontSize: '14px',
-                                        fontWeight: '500'
-                                    }}>{stat.title}</p>
-                                    <p style={{
-                                        margin: 0,
-                                        color: '#2d3748',
-                                        fontSize: '24px',
-                                        fontWeight: '700'
-                                    }}>{stat.value}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
+                    <h3 style={{
+                        margin: 0,
+                        fontSize: '18px',
+                        fontWeight: '700',
+                        color: '#2d3748'
+                    }}>{item.title}</h3>
+                    <p style={{
+                        margin: 0,
+                        color: '#718096',
+                        fontSize: '14px',
+                        lineHeight: '1.5'
+                    }}>{item.desc}</p>
+                </div>
+            </div>
+        ))}
+    </div>
+</section>
 
                 {/* Action Cards */}
                 <section>
-                    <div style={{
-                        backgroundColor: '#f8fafc',
-                        padding: '15px 25px',
-                        marginBottom: '20px',
-                        borderRadius: '12px 12px 0 0',
-                        borderBottom: '1px solid #edf2f7'
-                    }}>
-                        <h3 style={{
-                            margin: 0,
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            color: '#4a5568'
-                        }}>Administrative Actions</h3>
-                    </div>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '20px'
-                    }}>
+    <div style={{
+        backgroundColor: '#f8fafc',
+        padding: '15px 25px',
+        marginBottom: '20px',
+        borderRadius: '12px 12px 0 0',
+        borderBottom: '1px solid #edf2f7'
+    }}>
+        <h3 style={{
+            margin: 0,
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#4a5568'
+        }}>Administrative Actions</h3>
+    </div>
+    <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: '20px'
+    }}>
                         {[
-                            { icon: <FaHospital style={{ fontSize: '24px' }} />, title: "Manage Departments", desc: "Add, edit, and organize medical departments", color: '#4e73df' },
-                            { icon: <FaFlask style={{ fontSize: '24px' }} />, title: "Manage Laboratory", desc: "Configure lab tests and equipment", color: '#38a169' },
+                        {
+                            icon: <FaHospital style={{ fontSize: '24px' }} />, 
+                            title: "Manage Departments", 
+                            desc: "Add, edit, and organize medical departments", 
+                            color: '#4e73df',
+                            onClick: () => navigate('/admin/departments') 
+                        },
+                        { icon: <FaFlask style={{ fontSize: '24px' }} />, title: "Manage Laboratory", desc: "Configure lab tests and equipment", color: '#38a169' },
                             { icon: <FaUserMd style={{ fontSize: '24px' }} />, title: "Manage Doctors", desc: "View and manage all doctors", color: '#9f7aea' },
                             { icon: <FaUserNurse style={{ fontSize: '24px' }} />, title: "Manage Lab Technicians", desc: "Configure lab staff and schedules", color: '#ed8936' },
                             { icon: <FaMoneyBillWave style={{ fontSize: '24px' }} />, title: "Manage Revenue", desc: "View financial reports and analytics", color: '#805ad5' },
                             { icon: <FaUserCog style={{ fontSize: '24px' }} />, title: "Edit Profile", desc: "Update your admin profile information", color: '#3182ce' },
                         ].map((item, idx) => (
-                            <div key={idx} style={{
-                                backgroundColor: 'white',
-                                borderRadius: '10px',
-                                padding: '25px',
-                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
-                                border: '1px solid #e2e8f0',
-                                transition: 'all 0.3s',
-                                cursor: 'pointer',
-                                ':hover': {
-                                    transform: 'translateY(-5px)',
-                                    boxShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
-                                    borderColor: item.color
-                                }
-                            }}>
+                            <div 
+                                key={idx} 
+                                onClick={() => navigate(item.path)}  // Add this
+                                style={{
+                                    backgroundColor: 'white',
+                                    borderRadius: '10px',
+                                    padding: '25px',
+                                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
+                                    border: '1px solid #e2e8f0',
+                                    transition: 'all 0.3s',
+                                    cursor: 'pointer',
+                                    ':hover': {
+                                        transform: 'translateY(-5px)',
+                                        boxShadow: '0 10px 15px rgba(0, 0, 0, 0.1)',
+                                        borderColor: item.color
+                                    }
+                                }}
+                            >
                                 <div style={{
                                     display: 'flex',
                                     flexDirection: 'column',

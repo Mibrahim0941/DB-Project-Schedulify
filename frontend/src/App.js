@@ -13,6 +13,7 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import LabTest from './pages/LabTests';
 import Payment from './pages/payment';
 import AdminDashboard from './pages/AdminDashboard';
+import DepartmentsManagement from './pages/DepartmentsManagement';
 
 function App() {
   const isLoggedIn = localStorage.getItem('userId') !== null;
@@ -35,7 +36,10 @@ function App() {
       <Route path="/doctorhome" element={<DoctorHome /> } />
       <Route path="/doctor-dashboard" element={<DoctorDashboard /> } />
       <Route path="/payment" element={<Payment /> } />
-      <Route path="Admin" element ={<AdminDashboard />} />
+      <Route path="admin" element ={<AdminDashboard />} />
+      <Route path="admin/departments" element={<DepartmentsManagement />} />
+
+      {/* Redirect to login if not logged in */}
     </Routes>
   );
 }
