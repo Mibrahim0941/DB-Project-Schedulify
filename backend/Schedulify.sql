@@ -978,6 +978,125 @@ BEGIN
 END;
 GO
 
+-------Add Department--------
+CREATE OR ALTER PROCEDURE AddDepartment
+    @DeptName VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        -- Check if department already exists
+        IF EXISTS (SELECT 1 FROM Departments WHERE DeptName = @DeptName)
+        BEGIN
+            RAISERROR('Department already exists!', 16, 1);
+            RETURN;
+        END
+        
+        -- Insert new department
+        INSERT INTO Departments (DeptName, Doc_Count)
+        VALUES (@DeptName, 0);
+        
+        SELECT 'Department added successfully!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
+-----Remove Department
+CREATE OR ALTER PROCEDURE RemoveDepartment
+    @DeptID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        -- Check if department exists
+        IF NOT EXISTS (SELECT 1 FROM Departments WHERE DeptID = @DeptID)
+        BEGIN
+            RAISERROR('Department does not exist!', 16, 1);
+            RETURN;
+        END
+        
+        -- Delete department (CASCADE will handle related doctors)
+        DELETE FROM Departments WHERE DeptID = @DeptID;
+        
+        SELECT 'Department removed successfully!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
+------see all departments
+CREATE OR ALTER PROCEDURE GetAllDepartments
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        DeptID,
+        DeptName,
+        Doc_Count AS DoctorCount
+    FROM Departments
+    ORDER BY DeptName;
+END;
+
+-----Add a new lab test
+CREATE OR ALTER PROCEDURE AddLabTest
+    @TestName VARCHAR(255),
+    @TestCategory VARCHAR(255),
+    @BasePrice INT,
+    @City VARCHAR(100) = 'Lahore'
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        -- Check if test already exists
+        IF EXISTS (SELECT 1 FROM LabTests WHERE TestName = @TestName AND TestCategory = @TestCategory)
+        BEGIN
+            RAISERROR('Lab test already exists in this category!', 16, 1);
+            RETURN;
+        END
+        
+        -- Insert new lab test
+        INSERT INTO LabTests (TestName, TestCategory, BasePrice, City)
+        VALUES (@TestName, @TestCategory, @BasePrice, @City);
+        
+        SELECT 'Lab test added successfully!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
+----remove a lab test
+CREATE OR ALTER PROCEDURE RemoveLabTest
+    @TestID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        -- Check if test exists
+        IF NOT EXISTS (SELECT 1 FROM LabTests WHERE TestID = @TestID)
+        BEGIN
+            RAISERROR('Lab test does not exist!', 16, 1);
+            RETURN;
+        END
+        
+        -- Delete test (CASCADE will handle related time slots and appointments)
+        DELETE FROM LabTests WHERE TestID = @TestID;
+        
+        SELECT 'Lab test removed successfully!' AS Message;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
 
 SeLECT * FrOM LabTestRevenue
 delete from LabTestRevenue
