@@ -13,9 +13,7 @@ router.get('/adminprofile', async (req, res) => {
                 PhoneNum,
                 AdminPFP,
                 IsSuperAdmin,
-                IsActive,
-                CreatedAt,
-                LastLogin
+                IsActive
             FROM Admins
             WHERE AdminID = 1
         `;
