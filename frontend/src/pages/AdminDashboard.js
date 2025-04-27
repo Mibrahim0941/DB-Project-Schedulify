@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaUserShield, FaUserCog, FaFlask, FaMoneyBillWave, FaSignOutAlt } from 'react-icons/fa';
 
 const AdminDashboard = () => {
     const [adminData, setAdminData] = useState(null);
@@ -9,7 +10,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchAdminProfile = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/Admin/adminprofile', {
+                const response = await fetch('http://localhost:5000/api/admin/adminprofile', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                     }

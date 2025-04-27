@@ -27,7 +27,7 @@ app.use('/api/doctors', doctorRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/labtests', labTestRoutes);
 app.use('/api/departments', departmentRoutes);
-app.use('/api/Admin', adminroutes);
+app.use('/api/admin', adminroutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -47,3 +47,5 @@ app.use((req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
 });
+
+module.exports = router ;
