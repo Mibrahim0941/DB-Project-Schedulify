@@ -309,6 +309,14 @@ const AdminDashboard = () => {
                             color="#805ad5" 
                             onClick={() => navigate('/admin/revenue')}
                         />
+                        {/* New: Manage Patients */}
+                        <ActionCard 
+                            icon={<FaUserShield />} 
+                            title="Manage Patients" 
+                            desc="View and manage all patient records" 
+                            color="#4299e1" 
+                            onClick={() => navigate('/admin/Patient')}
+                        />
                     </div>
                 </section>
             </main>

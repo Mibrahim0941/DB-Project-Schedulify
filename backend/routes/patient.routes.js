@@ -216,5 +216,37 @@ router.get('/patientLabTests', async (req, res) => {
     }
 });
 
+// GET patient summary (name, email, appointments count, total payments)
+router.get('/patientsummary', async (req, res) => {
+    try {
+      // 1. Connect to the database
+      const pool = await sql.connect();   // ADD THIS LINE
+      
+      const query = `
+        SELECT 
+          P.PtName AS patientName,
+          P.PtEmail AS email,
+          COUNT(A.AptID) AS appointmentsCount,
+          ISNULL(SUM(PAY.Amount), 0) AS totalPayments
+        FROM 
+          Patients P
+        LEFT JOIN 
+          Appointments A ON P.PtID = A.PtID AND A.Status != 'Cancelled'
+        LEFT JOIN 
+          Payments PAY ON P.PtID = PAY.PatientID AND PAY.Status = 'Completed'
+        GROUP BY 
+          P.PtID, P.PtName, P.PtEmail
+        ORDER BY 
+          P.PtName
+      `;
+
+      const result = await pool.request().query(query);
+      res.json(result.recordset);
+
+    } catch (err) {
+      console.error('Error fetching patient summary:', err);
+      res.status(500).json({ error: 'Failed to fetch patient summary' });
+    }
+});
 
 module.exports = router; 
