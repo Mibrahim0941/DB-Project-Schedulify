@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHospital, FaPlus, FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
+import { FaHospital, FaPlus, FaArrowLeft, FaUserMd } from 'react-icons/fa';
 
 const DepartmentsManagement = () => {
     const [departments, setDepartments] = useState([]);
+    const [doctorCounts, setDoctorCounts] = useState({});
     const [newDepartment, setNewDepartment] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -11,28 +12,41 @@ const DepartmentsManagement = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchDepartments = async () => {
+        const fetchData = async () => {
             try {
+                setLoading(true);
+                
+                // Fetch departments with doctor counts
                 const response = await fetch('http://localhost:5000/api/departments/alldepartments', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                     }
-                    
                 });
-
-                if (!response.ok) throw new Error('Failed to fetch departments');
                 
-                const data = await response.json();
-                setDepartments(data);
-                console.log(data);
-            } catch (error) {
-                setError(error.message);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch departments');
+                }
+                
+                const departmentsData = await response.json();
+                
+                // Create doctor counts map from the Doc_Count field
+                const countsMap = {};
+                departmentsData.forEach(dept => {
+                    countsMap[dept.DeptID] = dept.Doc_Count || 0;
+                });
+                
+                setDepartments(departmentsData);
+                setDoctorCounts(countsMap);
+                
+            } catch (err) {
+                setError(err.message);
+                setTimeout(() => setError(''), 5000);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchDepartments();
+        fetchData();
     }, []);
 
     const handleAddDepartment = async () => {
@@ -40,7 +54,7 @@ const DepartmentsManagement = () => {
             setError('Department name cannot be empty');
             return;
         }
-        console.log(newDepartment);
+
         try {
             const response = await fetch('http://localhost:5000/api/departments/addDepartment', {
                 method: 'POST',
@@ -51,37 +65,19 @@ const DepartmentsManagement = () => {
                 body: JSON.stringify({ DeptName: newDepartment })
             });
 
-            if (!response.ok) throw new Error('Failed to add department');
-            console.log(newDepartment);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to add department');
+            }
+
             const data = await response.json();
             setDepartments([...departments, data]);
             setNewDepartment('');
             setSuccess('Department added successfully');
             setTimeout(() => setSuccess(''), 3000);
-        } catch (error) {
-            setError(error.message);
-            setTimeout(() => setError(''), 3000);
-        }
-    };
-
-    const handleDeleteDepartment = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this department?')) return;
-
-        try {
-            const response = await fetch(`http://localhost:5000/api/admin/departments/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
-
-            if (!response.ok) throw new Error('Failed to delete department');
-            
-            setDepartments(departments.filter(dept => dept._id !== id));
-            setSuccess('Department deleted successfully');
-            setTimeout(() => setSuccess(''), 3000);
-        } catch (error) {
-            setError(error.message);
+            setError('');
+        } catch (err) {
+            setError(err.message);
             setTimeout(() => setError(''), 3000);
         }
     };
@@ -103,6 +99,12 @@ const DepartmentsManagement = () => {
                     borderRadius: '50%',
                     animation: 'spin 1s linear infinite'
                 }}></div>
+                <style>{`
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `}</style>
             </div>
         );
     }
@@ -113,7 +115,7 @@ const DepartmentsManagement = () => {
             backgroundColor: '#f8f9fa',
             fontFamily: "'Inter', sans-serif"
         }}>
-            {/* Header (same as AdminDashboard) */}
+            {/* Header */}
             <header style={{
                 backgroundColor: 'white',
                 boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
@@ -144,13 +146,13 @@ const DepartmentsManagement = () => {
                                 alignItems: 'center',
                                 gap: '8px',
                                 color: '#4e73df',
-                                fontWeight: '600'
+                                fontWeight: '600',
+                                fontSize: '16px'
                             }}
                         >
                             <FaArrowLeft /> Back to Dashboard
                         </button>
                     </div>
-                    {/* Keep the same user profile and logout button as AdminDashboard */}
                 </div>
             </header>
 
@@ -249,12 +251,16 @@ const DepartmentsManagement = () => {
                                     border: '1px solid #e2e8f0',
                                     borderRadius: '8px',
                                     fontSize: '15px',
-                                    transition: 'all 0.3s',
-                                    ':focus': {
-                                        borderColor: '#4e73df',
-                                        outline: 'none',
-                                        boxShadow: '0 0 0 3px rgba(78, 115, 223, 0.2)'
-                                    }
+                                    transition: 'all 0.3s'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#4e73df';
+                                    e.target.style.outline = 'none';
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(78, 115, 223, 0.2)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#e2e8f0';
+                                    e.target.style.boxShadow = 'none';
                                 }}
                             />
                         </div>
@@ -272,9 +278,16 @@ const DepartmentsManagement = () => {
                                 alignItems: 'center',
                                 gap: '8px',
                                 transition: 'all 0.3s',
+                                fontSize: '15px',
                                 ':hover': {
                                     backgroundColor: '#3b5ab9'
                                 }
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = '#3b5ab9';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = '#4e73df';
                             }}
                         >
                             <FaPlus /> Add Department
@@ -306,7 +319,8 @@ const DepartmentsManagement = () => {
                             <div style={{
                                 textAlign: 'center',
                                 padding: '40px',
-                                color: '#718096'
+                                color: '#718096',
+                                fontSize: '16px'
                             }}>
                                 No departments found. Add your first department above.
                             </div>
@@ -317,14 +331,19 @@ const DepartmentsManagement = () => {
                                 gap: '20px'
                             }}>
                                 {departments.map((dept) => (
-                                    <div key={dept.DeptID} style={{
+                                    <div key={dept._id} style={{
                                         backgroundColor: '#f8fafc',
                                         borderRadius: '10px',
                                         padding: '20px',
                                         border: '1px solid #e2e8f0',
                                         display: 'flex',
                                         justifyContent: 'space-between',
-                                        alignItems: 'center'
+                                        alignItems: 'center',
+                                        transition: 'transform 0.2s',
+                                        ':hover': {
+                                            transform: 'translateY(-2px)',
+                                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)'
+                                        }
                                     }}>
                                         <div style={{
                                             display: 'flex',
@@ -339,68 +358,33 @@ const DepartmentsManagement = () => {
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                color: '#4e73df'
+                                                color: '#4e73df',
+                                                flexShrink: 0
                                             }}>
-                                                <FaHospital />
+                                                <FaHospital size={18} />
                                             </div>
                                             <span style={{
                                                 fontWeight: '600',
-                                                color: '#2d3748'
-                                            }}>{dept.DeptName}</span>
+                                                color: '#2d3748',
+                                                fontSize: '16px'
+                                            }}>
+                                                {dept.DeptName}
+                                            </span>
                                         </div>
                                         <div style={{
                                             display: 'flex',
-                                            gap: '10px'
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            backgroundColor: '#ebf8ff',
+                                            padding: '8px 12px',
+                                            borderRadius: '20px',
+                                            color: '#3182ce',
+                                            fontSize: '14px'
                                         }}>
-                                            <button
-                                                onClick={() => {
-                                                    // You can implement edit functionality here
-                                                    const newName = prompt('Edit department name:', dept.name);
-                                                    if (newName && newName !== dept.name) {
-                                                        // Call API to update department
-                                                    }
-                                                }}
-                                                style={{
-                                                    backgroundColor: '#edf2f7',
-                                                    border: 'none',
-                                                    width: '36px',
-                                                    height: '36px',
-                                                    borderRadius: '8px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    cursor: 'pointer',
-                                                    color: '#4a5568',
-                                                    transition: 'all 0.3s',
-                                                    ':hover': {
-                                                        backgroundColor: '#e2e8f0',
-                                                        color: '#2d3748'
-                                                    }
-                                                }}
-                                            >
-                                                <FaEdit />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteDepartment(dept._id)}
-                                                style={{
-                                                    backgroundColor: '#fff5f5',
-                                                    border: 'none',
-                                                    width: '36px',
-                                                    height: '36px',
-                                                    borderRadius: '8px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    cursor: 'pointer',
-                                                    color: '#e53e3e',
-                                                    transition: 'all 0.3s',
-                                                    ':hover': {
-                                                        backgroundColor: '#fed7d7'
-                                                    }
-                                                }}
-                                            >
-                                                <FaTrash />
-                                            </button>
+                                            <FaUserMd size={14} />
+                                            <span style={{ fontWeight: '600' }}>
+                                                {doctorCounts[dept.DeptID] || 0} doctors
+                                            </span>
                                         </div>
                                     </div>
                                 ))}
@@ -410,7 +394,7 @@ const DepartmentsManagement = () => {
                 </section>
             </main>
 
-            {/* Footer (same as AdminDashboard) */}
+            {/* Footer */}
             <footer style={{
                 backgroundColor: 'white',
                 borderTop: '1px solid #e2e8f0',
@@ -424,7 +408,7 @@ const DepartmentsManagement = () => {
                     color: '#718096',
                     fontSize: '14px'
                 }}>
-                    © {new Date().getFullYear()} Schedulify Admin Portal. All rights reserved.
+                    © {new Date().getFullYear()} Hospital Management System. All rights reserved.
                 </div>
             </footer>
         </div>
