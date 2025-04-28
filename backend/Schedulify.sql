@@ -78,7 +78,7 @@ USE Schedulify;
     -- TIMESLOTS TABLE
     CREATE TABLE TimeSlots(
         SlotID int IDENTITY(1,1) PRIMARY KEY,
-        DocID int FOREIGN KEY REFERENCES Doctors(DocID) ON DELETE CASCADE ON UPDATE CASCADE,
+        DocID int FOREIGN KEY REFERENCES Doctors(DocID) ON DELETE NO ACTION ON UPDATE NO ACTION,
         TimeSlot varchar(100),
     );
 
