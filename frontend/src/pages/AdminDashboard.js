@@ -299,7 +299,7 @@ const AdminDashboard = () => {
                             title="Manage Doctors" 
                             desc="View and manage all doctors" 
                             color="#9f7aea" 
-                            onClick={() => navigate('/admin/doctors')}
+                            onClick={() => navigate('/admin/Doctor')}
                         />
                         {/* Manage Revenue */}
                         <ActionCard 
