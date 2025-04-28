@@ -59,7 +59,7 @@ const ManageLaboratory = () => {
     if (!window.confirm('Are you sure you want to delete this lab test?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/removetest?${testId}`, {
+      const response = await fetch(`http://localhost:5000/api/admin/removetest?TestID=${testId}`, {
         method: 'DELETE'
       });
 

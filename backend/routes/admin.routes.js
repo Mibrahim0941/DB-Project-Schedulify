@@ -59,7 +59,7 @@ router.post('/addtest', async (req, res) => {
 
 // Remove a Lab Test
 router.delete('/removetest', async (req, res) => {
-    const { TestID } = req.body;
+    const { TestID } = req.query;
 
     if (!TestID) {
         return res.status(400).json({ success: false, message: 'TestID is required.' });
