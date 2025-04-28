@@ -121,7 +121,14 @@ router.delete('/deleteUser', async (req, res) => {
         if(userType === 'patient') {
         await request.query(`DELETE FROM Patients WHERE PtID = ${userID}`);
     }
-        
+        else {
+        const deptID = await request.query(`SELECT DeptID FROM Doctors WHERE DocID = ${userID}`);
+        console.log(deptID.recordset[0].DeptID);
+        await request.query(`DELETE FROM Doctors WHERE DocID = ${userID}`);  
+        request.input("DeptID", sql.Int, deptID.recordset[0].DeptID);
+        request.execute("decrementcount");
+        //await request.query(`UPDATE Departments  SET Doc_Count = Doc_Count - 1 WHERE DeptID = ${deptID}`);   
+        }
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });

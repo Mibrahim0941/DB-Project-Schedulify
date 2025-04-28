@@ -379,6 +379,10 @@ BEGIN
     -- Insert hashed password into DocPasswords table
     INSERT INTO DocPasswords (UserID, Pass)
     VALUES (@NewDocID, HASHBYTES('SHA2_256', @Password));
+
+	UPDATE Departments
+	SET Doc_Count = Doc_Count + 1
+	WHERE DeptID = @DeptID;
     
     PRINT 'Doctor registered successfully!';
 END;
@@ -1171,3 +1175,10 @@ Where DocID = 3
 
 DELETE FROM Doctors WHERE DocID = 1003
 
+CREATE OR ALTER PROCEDURE decrementcount
+	@DeptID int
+AS
+BEGIN
+	SELECT DeptID FROM Doctors WHERE DocID = 4
+	UPDATE Departments  SET Doc_Count = Doc_Count - 1 WHERE DeptID = @DeptID
+END
