@@ -137,7 +137,7 @@ const DepartmentsManagement = () => {
                         gap: '10px'
                     }}>
                         <button 
-                            onClick={() => navigate('/admin/dashboard')}
+                            onClick={() => navigate('/Admin')}
                             style={{
                                 background: 'none',
                                 border: 'none',
