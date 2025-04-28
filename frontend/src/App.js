@@ -14,6 +14,7 @@ import LabTest from './pages/LabTests';
 import Payment from './pages/payment';
 import AdminDashboard from './pages/AdminDashboard';
 import DepartmentsManagement from './pages/DepartmentsManagement';
+import LaboratoryManagement from './pages/LaboratoryManagement';
 
 function App() {
   const isLoggedIn = localStorage.getItem('userId') !== null;
@@ -38,6 +39,7 @@ function App() {
       <Route path="/payment" element={<Payment /> } />
       <Route path="admin" element ={<AdminDashboard />} />
       <Route path="admin/departments" element={<DepartmentsManagement />} />
+      <Route path="admin/Laboratory" element={<LaboratoryManagement />} />
 
       {/* Redirect to login if not logged in */}
     </Routes>
