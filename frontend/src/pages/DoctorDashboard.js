@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
+import { FaUserMd, FaCalendarAlt, FaEdit, FaTrash, FaArrowLeft, FaStar, FaMoneyBillWave, FaBriefcaseMedical, FaMapMarkerAlt, FaEnvelope, FaUniversity } from 'react-icons/fa';
 
 // Set app element for accessibility
 Modal.setAppElement('#root');
@@ -85,7 +86,6 @@ const DoctorDashboard = () => {
         throw new Error('Update failed');
       }
 
-      // Refresh doctor info
       const updatedResponse = await fetch(
         `http://localhost:5000/api/doctors/doctorInfo?DocID=${doctorId}`
       );
@@ -104,7 +104,6 @@ const DoctorDashboard = () => {
       return;
     }
 
-    // Validate time slot format (HH:MM-HH:MM)
     if (!/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]-([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(newTimeSlot)) {
       setError('Please enter time slot in HH:MM-HH:MM format (e.g., 09:00-09:30)');
       return;
@@ -128,7 +127,6 @@ const DoctorDashboard = () => {
         throw new Error(result.error || 'Failed to add time slot');
       }
 
-      // Refresh time slots
       const slotsRes = await fetch(`http://localhost:5000/api/appointments/availableSlots?DocID=${doctorId}`);
       const slotsData = await slotsRes.json();
       setTimeSlots(Array.isArray(slotsData) ? slotsData : []);
@@ -144,9 +142,7 @@ const DoctorDashboard = () => {
     }
   };
 
-  const handleDeleteTimeSlot = async (slotId,DoctorID) => {
-
-    console.log('slotid:', slotId);
+  const handleDeleteTimeSlot = async (slotId, DoctorID) => {
     try {
       const response = await fetch('http://localhost:5000/api/appointments/deleteTimeSlot', {
         method: 'DELETE',
@@ -163,7 +159,6 @@ const DoctorDashboard = () => {
         throw new Error('Failed to delete time slot');
       }
 
-      // Refresh time slots
       const slotsRes = await fetch(`http://localhost:5000/api/appointments/availableSlots?DocID=${doctorId}`);
       const slotsData = await slotsRes.json();
       setTimeSlots(Array.isArray(slotsData) ? slotsData : []);
@@ -182,7 +177,8 @@ const DoctorDashboard = () => {
   const handleBackClick = () => {
     navigate('/doctorhome');
   };
-const handleDeleteAccount = async () => {
+
+  const handleDeleteAccount = async () => {
     if (!window.confirm('Are you sure you want to delete your account? This action is irreversible.')) return;
     try {
       const response = await fetch('http://localhost:5000/api/auth/deleteUser', {
@@ -195,7 +191,6 @@ const handleDeleteAccount = async () => {
           userID: localStorage.getItem('userId')
         })
       });
-      console.log(localStorage.getItem('userId'));
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Failed to delete account');
 
@@ -208,126 +203,426 @@ const handleDeleteAccount = async () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading doctor information...</div>;
+    return (
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+      }}>
+        <div style={{
+          width: '50px',
+          height: '50px',
+          border: '5px solid #4e73df',
+          borderTopColor: 'transparent',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+      </div>
+    );
   }
 
   if (!doctorInfo) {
-    return <div className="error">{error || 'Failed to load doctor information'}</div>;
+    return (
+      <div style={{
+        padding: '40px',
+        textAlign: 'center',
+        color: '#e53e3e',
+        backgroundColor: '#fff5f5',
+        borderRadius: '8px',
+        maxWidth: '800px',
+        margin: '40px auto'
+      }}>
+        {error || 'Failed to load doctor information'}
+      </div>
+    );
   }
 
   return (
-    <div className="doctor-dashboard">
-      <header className="header">
-        <h1>Doctor Dashboard</h1>
-        <div>
-          <button className="edit-button" onClick={handleEditClick}>
-            Edit Profile
-          </button>
-          <button 
-            className="time-slot-button"
-            onClick={() => setTimeSlotModalOpen(true)}
-          >
-            Add Time Slot
-          </button>
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#f8f9fa',
+      fontFamily: "'Inter', sans-serif"
+    }}>
+      {/* Header */}
+      <header style={{
+        backgroundColor: 'white',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        padding: '20px 40px'
+      }}>
+        <div style={{
+          maxWidth: '1400px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <button
+              onClick={handleBackClick}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#ebf8ff',
+                color: '#3182ce',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                fontSize: '14px'
+              }}
+            >
+              <FaArrowLeft /> Back
+            </button>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: '#4e73df',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '20px'
+            }}>
+              <FaUserMd />
+            </div>
+            <h1 style={{
+              margin: 0,
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#2d3748',
+              letterSpacing: '-0.5px'
+            }}>Doctor Dashboard</h1>
+          </div>
           
-          <button
-            className="delete-account-button"
-            onClick={handleDeleteAccount}
-            //style={{ backgroundColor: '#e74c3c', color: 'white', marginLeft: '10px' }}
-          >
-            Delete Account
-          </button>
-
-          <button className="back-button" onClick={handleBackClick}>
-            Back to Appointments
-          </button>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px'
+          }}>
+            <button
+              onClick={() => setTimeSlotModalOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#9f7aea',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                fontSize: '14px'
+              }}
+            >
+              <FaCalendarAlt /> Add Time Slot
+            </button>
+            <button
+              onClick={handleEditClick}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#38a169',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                fontSize: '14px'
+              }}
+            >
+              <FaEdit /> Edit Profile
+            </button>
+            <button
+              onClick={handleDeleteAccount}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#e53e3e',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                fontSize: '14px'
+              }}
+            >
+              <FaTrash /> Delete Account
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="profile-section">
-          <div className="profile-header">
-            <div className="avatar">
-              {doctorInfo.DocName.charAt(0).toUpperCase()}
+      {/* Main Content */}
+      <main style={{
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: '30px 40px'
+      }}>
+        {/* Welcome Section */}
+        <section style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '25px 30px',
+          marginBottom: '30px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
+          borderLeft: '4px solid #4e73df'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                backgroundColor: '#4e73df',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '32px',
+                fontWeight: 'bold'
+              }}>
+                {doctorInfo.DocName.charAt(0).toUpperCase()}
+              </div>
+              <div style={{
+                position: 'absolute',
+                bottom: '5px',
+                right: '5px',
+                width: '20px',
+                height: '20px',
+                backgroundColor: doctorInfo.Presence ? '#48bb78' : '#e53e3e',
+                borderRadius: '50%',
+                border: '2px solid white'
+              }}></div>
             </div>
-            <h2>Dr. {doctorInfo.DocName}</h2>
-            <p className="specialization">{doctorInfo.Specialization}</p>
-          </div>
-
-          <div className="profile-details">
-            <div className="detail-card">
-              <h3>Professional Information</h3>
-              <div className="detail-item">
-                <span className="label">Degree:</span>
-                <span>{doctorInfo.Degree}</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Department:</span>
-                <span>{doctorInfo.DeptName}</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Experience:</span>
-                <span>{doctorInfo.Experience} years</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Rating:</span>
-                <span>{doctorInfo.Rating}/5</span>
-              </div>
-            </div>
-
-            <div className="detail-card">
-              <h3>Contact Information</h3>
-              <div className="detail-item">
-                <span className="label">Email:</span>
-                <span>{doctorInfo.DocEmail}</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Location:</span>
-                <span>{doctorInfo.City}, {doctorInfo.Country}</span>
-              </div>
-            </div>
-
-            <div className="detail-card">
-              <h3>Practice Information</h3>
-              <div className="detail-item">
-                <span className="label">Consultation Fee:</span>
-                <span>${doctorInfo.Fees}</span>
-              </div>
-              <div className="detail-item">
-                <span className="label">Availability:</span>
-                <span>{doctorInfo.Presence ? 'Available' : 'Not Available'}</span>
-              </div>
-              {doctorInfo.Utilities && (
-                <div className="detail-item">
-                  <span className="label">Services:</span>
-                  <span>{doctorInfo.Utilities}</span>
+            <div>
+              <h2 style={{
+                margin: '0 0 5px',
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#2d3748'
+              }}>Dr. {doctorInfo.DocName}</h2>
+              <p style={{
+                margin: '0 0 10px',
+                color: '#718096',
+                fontSize: '16px',
+                fontStyle: 'italic'
+              }}>{doctorInfo.Specialization}</p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '15px',
+                flexWrap: 'wrap'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: '#d69e2e'
+                }}>
+                  <FaStar />
+                  <span>{doctorInfo.Rating}/5</span>
                 </div>
-              )}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: '#38a169'
+                }}>
+                  <FaMoneyBillWave />
+                  <span>${doctorInfo.Fees} consultation</span>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: '#4a5568'
+                }}>
+                  <FaBriefcaseMedical />
+                  <span>{doctorInfo.Experience} years experience</span>
+                </div>
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Time Slots Section */}
-          <div className="time-slots-section">
-            <h3>Your Time Slots</h3>
-            {timeSlots.length === 0 ? (
-              <p className="no-slots">No time slots added yet</p>
-            ) : (
-              <div className="time-slots-grid">
-                {timeSlots.map(slot => (
-                  <div key={slot.TimeSlotID} className="time-slot-card">
-                    <span className="slot-time">{slot.TimeSlot}</span>
-                    <button 
-                      className="delete-slot-button"
-                      onClick={() => handleDeleteTimeSlot(slot.SlotID,doctorId)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))}
-              </div>
+        {/* Profile Details Section */}
+        <section style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+          marginBottom: '30px'
+        }}>
+          {/* Professional Information */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)'
+          }}>
+            <h3 style={{
+              margin: '0 0 20px',
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#4a5568',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <FaUserMd /> Professional Information
+            </h3>
+            <DetailItem icon={<FaUniversity />} label="Degree" value={doctorInfo.Degree} />
+            <DetailItem icon={<FaBriefcaseMedical />} label="Department" value={doctorInfo.DeptName} />
+            <DetailItem icon={<FaStar />} label="Experience" value={`${doctorInfo.Experience} years`} />
+            {doctorInfo.Utilities && (
+              <DetailItem icon={<FaBriefcaseMedical />} label="Services" value={doctorInfo.Utilities} />
             )}
           </div>
-        </div>
+
+          {/* Contact Information */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)'
+          }}>
+            <h3 style={{
+              margin: '0 0 20px',
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#4a5568',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <FaEnvelope /> Contact Information
+            </h3>
+            <DetailItem icon={<FaEnvelope />} label="Email" value={doctorInfo.DocEmail} />
+            <DetailItem icon={<FaMapMarkerAlt />} label="Location" value={`${doctorInfo.City}, ${doctorInfo.Country}`} />
+          </div>
+
+          {/* Availability Information */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)'
+          }}>
+            <h3 style={{
+              margin: '0 0 20px',
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#4a5568',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <FaCalendarAlt /> Availability
+            </h3>
+            <DetailItem 
+              icon={<FaCalendarAlt />} 
+              label="Status" 
+              value={doctorInfo.Presence ? 'Available' : 'Not Available'} 
+              color={doctorInfo.Presence ? '#38a169' : '#e53e3e'}
+            />
+            <DetailItem icon={<FaMoneyBillWave />} label="Consultation Fee" value={`$${doctorInfo.Fees}`} />
+          </div>
+        </section>
+
+        {/* Time Slots Section */}
+        <section style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '25px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.03)',
+          marginBottom: '30px'
+        }}>
+          <h3 style={{
+            margin: '0 0 20px',
+            fontSize: '20px',
+            fontWeight: '600',
+            color: '#2d3748',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <FaCalendarAlt /> Your Time Slots
+          </h3>
+          
+          {timeSlots.length === 0 ? (
+            <p style={{
+              color: '#718096',
+              fontStyle: 'italic',
+              textAlign: 'center',
+              padding: '20px'
+            }}>No time slots added yet</p>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: '15px'
+            }}>
+              {timeSlots.map(slot => (
+                <div key={slot.TimeSlotID} style={{
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '8px',
+                  padding: '15px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <span style={{
+                    fontWeight: '500',
+                    color: '#2d3748'
+                  }}>{slot.TimeSlot}</span>
+                  <button 
+                    onClick={() => handleDeleteTimeSlot(slot.SlotID, doctorId)}
+                    style={{
+                      backgroundColor: '#fff5f5',
+                      color: '#e53e3e',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '5px 10px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    <FaTrash size={12} /> Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       </main>
 
       {/* Edit Profile Modal */}
@@ -342,53 +637,117 @@ const handleDeleteAccount = async () => {
             bottom: 'auto',
             marginRight: '-50%',
             transform: 'translate(-50%, -50%)',
-            width: '500px',
+            width: '600px',
             maxWidth: '90%',
-            borderRadius: '8px',
-            padding: '25px',
-            boxShadow: '0 5px 15px rgba(0,0,0,0.2)'
+            borderRadius: '12px',
+            padding: '30px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+            border: 'none'
           },
           overlay: {
             backgroundColor: 'rgba(0,0,0,0.5)'
           }
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Edit Doctor Information</h2>
+        <h2 style={{ 
+          margin: '0 0 20px',
+          fontSize: '22px',
+          fontWeight: '700',
+          color: '#2d3748',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          <FaEdit /> Edit Doctor Information
+        </h2>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div style={{
+            backgroundColor: '#fff5f5',
+            color: '#e53e3e',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            borderLeft: '4px solid #e53e3e'
+          }}>
+            {error}
+          </div>
+        )}
 
-        <div className="form-group">
-          <label>Full Name:</label>
-          <input
-            type="text"
-            value={editData.DocName || ''}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '20px',
+          marginBottom: '20px'
+        }}>
+          <FormGroup 
+            label="Full Name" 
+            value={editData.DocName || ''} 
             onChange={(e) => setEditData({...editData, DocName: e.target.value})}
           />
-        </div>
-
-        <div className="form-group">
-          <label>Degree:</label>
-          <input
-            type="text"
-            value={editData.Degree || ''}
+          <FormGroup 
+            label="Degree" 
+            value={editData.Degree || ''} 
             onChange={(e) => setEditData({...editData, Degree: e.target.value})}
           />
-        </div>
-
-        <div className="form-group">
-          <label>Specialization:</label>
-          <input
-            type="text"
-            value={editData.Specialization || ''}
+          <FormGroup 
+            label="Specialization" 
+            value={editData.Specialization || ''} 
             onChange={(e) => setEditData({...editData, Specialization: e.target.value})}
+          />
+          <FormGroup 
+            label="City" 
+            value={editData.DocCity || ''} 
+            onChange={(e) => setEditData({...editData, DocCity: e.target.value})}
+          />
+          <FormGroup 
+            label="Country" 
+            value={editData.DocCountry || ''} 
+            onChange={(e) => setEditData({...editData, DocCountry: e.target.value})}
+          />
+          <FormGroup 
+            label="Rating" 
+            type="number"
+            min="0"
+            max="5"
+            step="0.1"
+            value={editData.Rating || ''} 
+            onChange={(e) => setEditData({...editData, Rating: parseFloat(e.target.value)})}
+          />
+          <FormGroup 
+            label="Consultation Fee ($)" 
+            type="number"
+            min="0"
+            value={editData.Fees || ''} 
+            onChange={(e) => setEditData({...editData, Fees: parseFloat(e.target.value)})}
+          />
+          <FormGroup 
+            label="Experience (years)" 
+            type="number"
+            min="0"
+            value={editData.Experience || ''} 
+            onChange={(e) => setEditData({...editData, Experience: parseInt(e.target.value)})}
           />
         </div>
 
-        <div className="form-group">
-          <label>Department:</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            fontWeight: '600',
+            color: '#4a5568'
+          }}>Department</label>
           <select
             value={editData.DeptID || ''}
             onChange={(e) => setEditData({...editData, DeptID: parseInt(e.target.value)})}
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              backgroundColor: 'white',
+              fontSize: '14px'
+            }}
           >
             <option value="">Select Department</option>
             {departments.map(dept => (
@@ -399,80 +758,85 @@ const handleDeleteAccount = async () => {
           </select>
         </div>
 
-        <div className="form-group">
-          <label>Rating:</label>
-          <input
-            type="number"
-            min="0"
-            max="5"
-            step="0.1"
-            value={editData.Rating || ''}
-            onChange={(e) => setEditData({...editData, Rating: parseFloat(e.target.value)})}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Consultation Fee ($):</label>
-          <input
-            type="number"
-            min="0"
-            value={editData.Fees || ''}
-            onChange={(e) => setEditData({...editData, Fees: parseFloat(e.target.value)})}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Experience (years):</label>
-          <input
-            type="number"
-            min="0"
-            value={editData.Experience || ''}
-            onChange={(e) => setEditData({...editData, Experience: parseInt(e.target.value)})}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Availability:</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            fontWeight: '600',
+            color: '#4a5568'
+          }}>Availability</label>
           <select
             value={editData.Presence ? 'true' : 'false'}
             onChange={(e) => setEditData({...editData, Presence: e.target.value === 'true'})}
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              backgroundColor: 'white',
+              fontSize: '14px'
+            }}
           >
             <option value="true">Available</option>
             <option value="false">Not Available</option>
           </select>
         </div>
 
-        <div className="form-group">
-          <label>City:</label>
-          <input
-            type="text"
-            value={editData.DocCity || ''}
-            onChange={(e) => setEditData({...editData, DocCity: e.target.value})}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Country:</label>
-          <input
-            type="text"
-            value={editData.DocCountry || ''}
-            onChange={(e) => setEditData({...editData, DocCountry: e.target.value})}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Services/Utilities:</label>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            fontWeight: '600',
+            color: '#4a5568'
+          }}>Services/Utilities</label>
           <textarea
             value={editData.Utilities || ''}
             onChange={(e) => setEditData({...editData, Utilities: e.target.value})}
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              minHeight: '100px',
+              resize: 'vertical',
+              fontSize: '14px'
+            }}
           />
         </div>
 
-        <div className="modal-actions">
-          <button className="cancel-button" onClick={() => setEditModalOpen(false)}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '15px'
+        }}>
+          <button
+            onClick={() => setEditModalOpen(false)}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#e2e8f0',
+              color: '#4a5568',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
             Cancel
           </button>
-          <button className="save-button" onClick={handleUpdate}>
+          <button
+            onClick={handleUpdate}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#4e73df',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
             Save Changes
           </button>
         </div>
@@ -496,261 +860,175 @@ const handleDeleteAccount = async () => {
             transform: 'translate(-50%, -50%)',
             width: '400px',
             maxWidth: '90%',
-            borderRadius: '8px',
-            padding: '25px',
-            boxShadow: '0 5px 15px rgba(0,0,0,0.2)'
+            borderRadius: '12px',
+            padding: '30px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+            border: 'none'
           },
           overlay: {
             backgroundColor: 'rgba(0,0,0,0.5)'
           }
         }}
       >
-        <h2 style={{ marginTop: 0 }}>Add New Time Slot</h2>
+        <h2 style={{ 
+          margin: '0 0 20px',
+          fontSize: '22px',
+          fontWeight: '700',
+          color: '#2d3748',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          <FaCalendarAlt /> Add New Time Slot
+        </h2>
         
-        {error && <div className="error-message">{error}</div>}
-        {successMessage && <div className="success-message">{successMessage}</div>}
-
-        <div className="form-group">
-          <label>Time Slot (e.g., 09:00-09:30):</label>
-          <input
-            type="text"
-            placeholder="HH:MM-HH:MM"
-            value={newTimeSlot}
-            onChange={(e) => setNewTimeSlot(e.target.value)}
-          />
-          <p className="hint">Enter time in 24-hour format (e.g., 13:30-14:00)</p>
-        </div>
-
-        <div className="modal-actions">
-          <button className="cancel-button" onClick={() => {
-            setTimeSlotModalOpen(false);
-            setError('');
-            setSuccessMessage('');
-            setNewTimeSlot('');
+        {error && (
+          <div style={{
+            backgroundColor: '#fff5f5',
+            color: '#e53e3e',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            borderLeft: '4px solid #e53e3e'
           }}>
+            {error}
+          </div>
+        )}
+
+        {successMessage && (
+          <div style={{
+            backgroundColor: '#f0fff4',
+            color: '#38a169',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            borderLeft: '4px solid #38a169'
+          }}>
+            {successMessage}
+          </div>
+        )}
+
+        <FormGroup 
+          label="Time Slot (e.g., 09:00-09:30)" 
+          placeholder="HH:MM-HH:MM"
+          value={newTimeSlot}
+          onChange={(e) => setNewTimeSlot(e.target.value)}
+        />
+        <p style={{
+          color: '#718096',
+          fontSize: '13px',
+          margin: '-10px 0 20px'
+        }}>Enter time in 24-hour format (e.g., 13:30-14:00)</p>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '15px'
+        }}>
+          <button
+            onClick={() => {
+              setTimeSlotModalOpen(false);
+              setError('');
+              setSuccessMessage('');
+              setNewTimeSlot('');
+            }}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#e2e8f0',
+              color: '#4a5568',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
             Cancel
           </button>
-          <button className="save-button" onClick={handleAddTimeSlot}>
+          <button
+            onClick={handleAddTimeSlot}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#9f7aea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+          >
             Add Slot
           </button>
         </div>
       </Modal>
-
-      <style jsx>{`
-      .delete-account-button {
-          background: #e74c3c;
-          color: white;
-          padding: 8px 16px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: bold;
-          margin-left: 10px;
-      }
-        .doctor-dashboard {
-          font-family: Arial, sans-serif;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 30px;
-          padding-bottom: 15px;
-          border-bottom: 1px solid #eee;
-        }
-        .header h1 {
-          color: #2c3e50;
-          margin: 0;
-        }
-        .back-button, .edit-button, .time-slot-button {
-          padding: 8px 16px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: bold;
-          margin-left: 10px;
-        }
-        .back-button {
-          background-color: #3498db;
-          color: white;
-        }
-        .edit-button {
-          background-color: #2ecc71;
-          color: white;
-        }
-        .time-slot-button {
-          background-color: #9b59b6;
-          color: white;
-        }
-          .delete-slot-button {
-          background: #e74c3c;
-          color: white;
-          padding: 8px 16px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: bold;
-          margin-left: 10px;
-        }
-        .profile-section {
-          background: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          padding: 30px;
-        }
-        .profile-header {
-          text-align: center;
-          margin-bottom: 30px;
-        }
-        .avatar {
-          width: 80px;
-          height: 80px;
-          background-color: #3498db;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 32px;
-          font-weight: bold;
-          margin: 0 auto 15px;
-        }
-        .profile-header h2 {
-          color: #2c3e50;
-          margin: 0;
-        }
-        .specialization {
-          color: #7f8c8d;
-          font-style: italic;
-          margin: 5px 0 0;
-        }
-        .profile-details {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-        .detail-card {
-          background: #f8f9fa;
-          border-radius: 8px;
-          padding: 20px;
-        }
-        .detail-card h3 {
-          color: #2c3e50;
-          margin-top: 0;
-          margin-bottom: 15px;
-          padding-bottom: 10px;
-          border-bottom: 1px solid #ddd;
-        }
-        .detail-item {
-          margin-bottom: 10px;
-        }
-        .label {
-          font-weight: bold;
-          color: #7f8c8d;
-          margin-right: 5px;
-        }
-        .loading, .error {
-          text-align: center;
-          padding: 40px;
-          color: #7f8c8d;
-        }
-        .error-message {
-          color: #e74c3c;
-          background: #fadbd8;
-          padding: 10px;
-          border-radius: 4px;
-          margin-bottom: 15px;
-        }
-        .success-message {
-          color: #27ae60;
-          background: #d5f5e3;
-          padding: 10px;
-          border-radius: 4px;
-          margin-bottom: 15px;
-        }
-        .form-group {
-          margin-bottom: 15px;
-        }
-        .form-group label {
-          display: block;
-          margin-bottom: 5px;
-          font-weight: bold;
-          color: #2c3e50;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          box-sizing: border-box;
-        }
-        .form-group textarea {
-          height: 80px;
-          resize: vertical;
-        }
-        .form-group .hint {
-          font-size: 12px;
-          color: #7f8c8d;
-          margin-top: 5px;
-        }
-        .modal-actions {
-          display: flex;
-          justify-content: flex-end;
-          margin-top: 20px;
-          gap: 10px;
-        }
-        .cancel-button {
-          padding: 8px 16px;
-          background: #e0e0e0;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        .save-button {
-          padding: 8px 16px;
-          background: #2ecc71;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-        .time-slots-section {
-          margin-top: 30px;
-        }
-        .time-slots-section h3 {
-          color: #2c3e50;
-          margin-bottom: 15px;
-        }
-        .no-slots {
-          color: #7f8c8d;
-          font-style: italic;
-        }
-        .time-slots-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 15px;
-        }
-        .time-slot-card {
-          background: #f8f9fa;
-          border-radius: 8px;
-          padding: 15px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .slot-time {
-          font-weight: 500;
-        }
-        
-      `}</style>
     </div>
   );
 };
+
+// Reusable DetailItem component
+const DetailItem = ({ icon, label, value, color = '#2d3748' }) => (
+  <div style={{
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '12px',
+    marginBottom: '15px'
+  }}>
+    <div style={{
+      width: '32px',
+      height: '32px',
+      backgroundColor: '#ebf4ff',
+      borderRadius: '8px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#4e73df',
+      flexShrink: 0
+    }}>
+      {icon}
+    </div>
+    <div>
+      <p style={{
+        margin: '0 0 4px',
+        color: '#718096',
+        fontSize: '14px',
+        fontWeight: '500'
+      }}>{label}</p>
+      <p style={{
+        margin: 0,
+        color: color,
+        fontSize: '16px',
+        fontWeight: '600'
+      }}>{value}</p>
+    </div>
+  </div>
+);
+
+// Reusable FormGroup component
+const FormGroup = ({ label, type = 'text', value, onChange, placeholder, ...props }) => (
+  <div style={{ marginBottom: '20px' }}>
+    <label style={{
+      display: 'block',
+      marginBottom: '8px',
+      fontWeight: '600',
+      color: '#4a5568'
+    }}>{label}</label>
+    <input
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      style={{
+        width: '100%',
+        padding: '10px',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        backgroundColor: 'white',
+        fontSize: '14px'
+      }}
+      {...props}
+    />
+  </div>
+);
 
 export default DoctorDashboard;
