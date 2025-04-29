@@ -274,10 +274,12 @@ VALUES
 select * from TestTimeSlots
 
 INSERT INTO Admins (AdminName, AdminEmail, PhoneNum, IsSuperAdmin)
-VALUES ('Ibrahim', 'ib@schedulify.com', '03001234567', 1);
+VALUES ('Areeba', 'rb@schedulify.com', '03001234567', 1);
 
 INSERT INTO AdminPasswords (AdminID, PassHash)
 VALUES (1, HASHBYTES('SHA2_256', 'Admin@123'));
+
+
 --------------------------------------------------User Login------------------------------------------------------
 
 -------------------------To check Booked Slots------------------------

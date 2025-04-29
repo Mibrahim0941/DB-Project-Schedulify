@@ -307,7 +307,7 @@ const AdminDashboard = () => {
                             title="Manage Revenue" 
                             desc="View financial reports and analytics" 
                             color="#805ad5" 
-                            onClick={() => navigate('/admin/revenue')}
+                            onClick={() => navigate('/admin/Revenue')}
                         />
                         {/* New: Manage Patients */}
                         <ActionCard 
