@@ -372,7 +372,8 @@ router.get('/paymentshistory', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-  router.post('/processPayment', async (req, res) => {
+
+router.post('/processPayment', async (req, res) => {
     try {
         const { PatientID, Amount } = req.body;
 
