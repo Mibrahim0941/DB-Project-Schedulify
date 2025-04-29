@@ -397,7 +397,7 @@ const ManageDoctors = () => {
                                                     justifyContent: 'center',
                                                     color: '#4e73df',
                                                     flexShrink: 0
-                                                }}>₹</span>
+                                                }}>💵</span>
                                                 <div>
                                                     <p style={{
                                                         margin: 0,
@@ -408,7 +408,7 @@ const ManageDoctors = () => {
                                                         margin: 0,
                                                         color: '#2d3748',
                                                         fontWeight: '600'
-                                                    }}>{doctor.Fees || 'N/A'}</p>
+                                                    }}>{doctor.Fees + ' PKR' || 'N/A'}</p>
                                                 </div>
                                             </div>
 

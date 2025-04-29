@@ -152,7 +152,7 @@ const DoctorDetailPage = () => {
           <h2 style={{ marginTop: 0 }}>Dr. {doctor.DocName}</h2>
           <p><strong>Specialization:</strong> {doctor.Specialization}</p>
           <p><strong>Rating:</strong> ⭐ {doctor.Rating}</p>
-          <p><strong>Fees:</strong> ${doctor.Fees}</p>
+          <p><strong>Fees:</strong> PKR {doctor.Fees}</p>
           <p><strong>Experience:</strong> {doctor.Experience} years</p>
           <p><strong>Availability:</strong> {doctor.Presence}</p>
         </div>

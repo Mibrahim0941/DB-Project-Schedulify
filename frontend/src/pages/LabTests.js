@@ -257,8 +257,8 @@ const LabTestsPage = () => {
                 onClick: () => handleTestClick(test)
               },
               React.createElement('div', { style: styles.testName }, test.TestName),
-              React.createElement('div', { style: styles.description }, test.Description),
-              React.createElement('div', { style: styles.price }, `Rs. ${test.Price}`)
+              React.createElement('div', { style: styles.description }, test.TestCategory),
+              React.createElement('div', { style: styles.price }, `Rs. ${test.BasePrice}`)
             )
           )
         )

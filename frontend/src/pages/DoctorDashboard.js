@@ -455,7 +455,7 @@ const DoctorDashboard = () => {
                   color: '#38a169'
                 }}>
                   <FaMoneyBillWave />
-                  <span>${doctorInfo.Fees} consultation</span>
+                  <span>PKR{doctorInfo.Fees} consultation</span>
                 </div>
                 <div style={{
                   display: 'flex',
@@ -550,7 +550,7 @@ const DoctorDashboard = () => {
               value={doctorInfo.Presence ? 'Available' : 'Not Available'} 
               color={doctorInfo.Presence ? '#38a169' : '#e53e3e'}
             />
-            <DetailItem icon={<FaMoneyBillWave />} label="Consultation Fee" value={`$${doctorInfo.Fees}`} />
+            <DetailItem icon={<FaMoneyBillWave />} label="Consultation Fee" value={`PKR ${doctorInfo.Fees}`} />
           </div>
         </section>
 
@@ -715,7 +715,7 @@ const DoctorDashboard = () => {
             onChange={(e) => setEditData({...editData, Rating: parseFloat(e.target.value)})}
           />
           <FormGroup 
-            label="Consultation Fee ($)" 
+            label="Consultation Fee (PKR)" 
             type="number"
             min="0"
             value={editData.Fees || ''} 
