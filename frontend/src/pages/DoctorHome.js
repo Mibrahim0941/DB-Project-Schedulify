@@ -35,6 +35,11 @@ const DoctorHome = () => {
     navigate(route);
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.headerContainer}>
@@ -58,10 +63,10 @@ const DoctorHome = () => {
           My Profile
         </button>
         <button 
-          onClick={() => handleNavigate('/about')} 
+          onClick={handleLogout} 
           style={styles.navButton}
         >
-          About Us
+          Logout
         </button>
       </div>
 
@@ -125,9 +130,6 @@ const DoctorHome = () => {
                       <span>{appointment.Notes || 'No notes available'}</span>
                     </div>
                   </div>
-                  <button style={styles.viewButton}>
-                    View Details
-                  </button>
                 </div>
               ))}
             </div>
@@ -158,21 +160,49 @@ const styles = {
     minHeight: '100vh'
   },
   headerContainer: {
-    textAlign: 'center',
     marginBottom: '40px',
-    paddingBottom: '20px',
-    borderBottom: '1px solid #e0e6ed'
+    padding: '25px 30px',
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
   },
-  header: {
+  headerContent: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  greeting: {
     color: '#2c3e50',
-    fontSize: '2.5rem',
-    marginBottom: '10px',
-    fontWeight: '600'
+    fontSize: '2rem',
+    marginBottom: '8px',
+    fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  doctorName: {
+    color: '#3498db',
+    fontWeight: '600',
+    marginLeft: '8px'
   },
   subHeader: {
     color: '#7f8c8d',
     fontSize: '1.1rem',
-    marginTop: '0'
+    margin: '0'
+  },
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  logo: {
+    fontSize: '2.5rem'
+  },
+  logoText: {
+    color: '#2c3e50',
+    fontSize: '1.8rem',
+    fontWeight: '600',
+    letterSpacing: '-0.5px'
   },
   navBar: {
     display: 'flex',
@@ -181,12 +211,11 @@ const styles = {
     marginBottom: '40px',
     flexWrap: 'wrap'
   },
-  
   navButton: {
     padding: '12px 25px',
     backgroundColor: 'white',
-    color: '#3498db',
-    border: '1px solid #3498db',
+    color: '#e74c3c',
+    border: '1px solid #e74c3c',
     borderRadius: '30px',
     cursor: 'pointer',
     fontSize: '1rem',
@@ -194,7 +223,7 @@ const styles = {
     fontWeight: '500',
     boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
     ':hover': {
-      backgroundColor: '#f0f7ff',
+      backgroundColor: '#fdeaea',
       transform: 'translateY(-2px)'
     }
   },
@@ -344,21 +373,6 @@ const styles = {
     fontWeight: '600',
     color: '#7f8c8d'
   },
-  viewButton: {
-    width: '100%',
-    padding: '12px',
-    backgroundColor: '#f8f9fa',
-    color: '#3498db',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontSize: '1rem',
-    transition: 'all 0.3s',
-    fontWeight: '500',
-    ':hover': {
-      backgroundColor: '#e1f0ff'
-    }
-  },
   emptyState: {
     textAlign: 'center',
     padding: '60px 20px'
@@ -373,51 +387,6 @@ const styles = {
     color: '#2c3e50',
     fontSize: '1.8rem',
     marginBottom: '15px'
-  },
-  headerContainer: {
-    marginBottom: '40px',
-    padding: '25px 30px',
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-  },
-  headerContent: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  },
-  greeting: {
-    color: '#2c3e50',
-    fontSize: '2rem',
-    marginBottom: '8px',
-    fontWeight: '500',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  doctorName: {
-    color: '#3498db',
-    fontWeight: '600',
-    marginLeft: '8px'
-  },
-  subHeader: {
-    color: '#7f8c8d',
-    fontSize: '1.1rem',
-    margin: '0'
-  },
-  logoContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-  },
-  logo: {
-    fontSize: '2.5rem'
-  },
-  logoText: {
-    color: '#2c3e50',
-    fontSize: '1.8rem',
-    fontWeight: '600',
-    letterSpacing: '-0.5px'
   },
   emptyText: {
     color: '#7f8c8d',
