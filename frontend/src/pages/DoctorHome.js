@@ -58,10 +58,10 @@ const DoctorHome = () => {
           My Profile
         </button>
         <button 
-          onClick={() => handleNavigate('/about')} 
+          onClick={() => handleNavigate('/login')} 
           style={styles.navButton}
         >
-          About Us
+          Logout
         </button>
       </div>
 

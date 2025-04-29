@@ -105,6 +105,7 @@ router.post("/adminlogin", async (req, res) => {
         });
     }
 });
+
 // Delete user
 router.delete('/deleteUser', async (req, res) => {
     try {

@@ -33,6 +33,7 @@ router.get('/adminprofile', async (req, res) => {
         });
     }
 });
+
 // Add a new Lab Test
 router.post('/addtest', async (req, res) => {
     const { TestName, TestCategory, BasePrice, City = 'Lahore' } = req.body;
