@@ -31,6 +31,11 @@ const AdminDashboard = () => {
         fetchAdminProfile();
     }, [navigate]);
 
+    const handleLogoutClick = () => {
+        localStorage.clear();
+        navigate('/login');
+      };
+
     if (loading) {
         return (
             <div style={{ 
@@ -134,8 +139,7 @@ const AdminDashboard = () => {
                         </div>
                         <button
                             onClick={() => {
-                                localStorage.removeItem('adminToken');
-                                navigate('/login');
+                                handleLogoutClick();
                             }}
                             style={{
                                 display: 'flex',

@@ -35,6 +35,11 @@ const DoctorHome = () => {
     navigate(route);
   };
 
+  const handleLogoutClick = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.headerContainer}>
@@ -58,7 +63,7 @@ const DoctorHome = () => {
           My Profile
         </button>
         <button 
-          onClick={() => handleNavigate('/login')} 
+          onClick={handleLogoutClick} 
           style={styles.navButton}
         >
           Logout
