@@ -115,54 +115,281 @@ const DoctorDetailPage = () => {
     }
   };
 
+  const mainContainerStyle = {
+    padding: '40px',
+    maxWidth: '1000px',
+    margin: '0 auto',
+    fontFamily: '"Segoe UI", Arial, sans-serif',
+    color: '#2c3e50',
+    backgroundColor: '#f9fafb',
+    borderRadius: '12px',
+    boxShadow: '0 0 20px rgba(0,0,0,0.05)'
+  };
+
+  const cardStyle = {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    padding: '30px',
+    marginBottom: '30px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+  };
+
+  const profileSectionStyle = {
+    display: 'flex',
+    gap: '30px',
+    flexWrap: 'wrap',
+    marginBottom: '20px'
+  };
+
+  const profileImageStyle = {
+    width: '180px',
+    height: '180px',
+    borderRadius: '50%',
+    objectFit: 'cover',
+    border: '4px solid #3498db',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+  };
+
+  const doctorInfoStyle = {
+    flex: '1',
+    minWidth: '250px'
+  };
+
+  const sectionTitleStyle = {
+    color: '#3498db',
+    borderBottom: '2px solid #e0e0e0',
+    paddingBottom: '10px',
+    marginTop: '0'
+  };
+
+  const dateSelectorStyle = {
+    padding: '12px',
+    borderRadius: '6px',
+    border: dateError ? '2px solid #e74c3c' : '1px solid #cbd5e0',
+    width: '100%',
+    maxWidth: '250px',
+    fontSize: '16px',
+    outline: 'none',
+    transition: 'border 0.3s ease'
+  };
+
+  const checkButtonStyle = {
+    padding: '12px 24px',
+    backgroundColor: isFetchingSlots ? '#a0aec0' : '#3498db',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: isFetchingSlots ? 'not-allowed' : 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+    marginTop: '22px',
+    transition: 'background-color 0.3s ease',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  };
+
+  const timeSlotsGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+    gap: '15px',
+    marginTop: '20px'
+  };
+
+  const bookButtonStyle = {
+    padding: '12px 28px',
+    backgroundColor: '#2ecc71',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  };
+
+  const backButtonStyle = {
+    marginTop: '30px',
+    padding: '10px 20px',
+    backgroundColor: '#f8f9fc',
+    border: '1px solid #d1d9e6',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '15px',
+    fontWeight: '500',
+    color: '#4a5568',
+    transition: 'all 0.2s ease'
+  };
+
+  const infoItemStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10px',
+    fontSize: '16px'
+  };
+
+  const infoLabelStyle = {
+    fontWeight: '600',
+    minWidth: '110px',
+    color: '#64748b'
+  };
+
+  const infoValueStyle = {
+    color: '#2c3e50'
+  };
+
   if (loading) {
-    return <div style={{ padding: '40px' }}>Loading doctor details...</div>;
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '70vh',
+        fontSize: '18px',
+        color: '#64748b'
+      }}>
+        <div style={{
+          display: 'inline-block',
+          width: '30px',
+          height: '30px',
+          border: '3px solid rgba(0,0,0,0.1)',
+          borderTopColor: '#3498db',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginRight: '15px'
+        }}></div>
+        Loading doctor details...
+        <style>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   if (!doctor) {
     return (
-      <div style={{ padding: '40px' }}>
-        <p>Doctor not found or something went wrong.</p>
-        <button onClick={() => navigate('/')}>Go Back</button>
+      <div style={{
+        padding: '40px',
+        textAlign: 'center',
+        maxWidth: '500px',
+        margin: '50px auto',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{
+          fontSize: '60px',
+          color: '#e74c3c',
+          marginBottom: '20px'
+        }}>⚠️</div>
+        <h2 style={{ color: '#e74c3c', marginBottom: '20px' }}>Doctor Not Found</h2>
+        <p style={{ marginBottom: '30px', color: '#64748b' }}>
+          We couldn't find the doctor you're looking for or something went wrong.
+        </p>
+        <button 
+          onClick={() => navigate(-1)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#3498db',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '16px'
+          }}
+        >
+          Go Back
+        </button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', gap: '30px', marginBottom: '40px' }}>
-        <div>
-          <img
-            src={doctor.DocPFP}
-            alt="Profile"
-            style={{ 
-              width: '150px', 
-              height: '150px', 
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '3px solid #e0e0e0'
-            }}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'https://th.bing.com/th/id/OIP.INB8GTMpMEJQLcsx8sCeBAHaHa?w=196&h=196&c=7&r=0&o=5&dpr=1.3&pid=1.7';
-            }}
-          />
-        </div>
-        <div>
-          <h2 style={{ marginTop: 0 }}>Dr. {doctor.DocName}</h2>
-          <p><strong>Specialization:</strong> {doctor.Specialization}</p>
-          <p><strong>Rating:</strong> ⭐ {doctor.Rating}</p>
-          <p><strong>Fees:</strong> PKR {doctor.Fees}</p>
-          <p><strong>Experience:</strong> {doctor.Experience} years</p>
-          <p><strong>Availability:</strong> {doctor.Presence}</p>
+    <div style={mainContainerStyle}>
+      <div style={cardStyle}>
+        <div style={profileSectionStyle}>
+          <div>
+            <img
+              src={doctor.DocPFP}
+              alt={`Dr. ${doctor.DocName}`}
+              style={profileImageStyle}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2380CBC4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+              }}
+            />
+          </div>
+          <div style={doctorInfoStyle}>
+            <h2 style={{ 
+              fontSize: '28px', 
+              marginTop: 0, 
+              marginBottom: '20px',
+              color: '#2c3e50' 
+            }}>
+              Dr. {doctor.DocName}
+            </h2>
+            
+            <div style={infoItemStyle}>
+              <span style={infoLabelStyle}>Specialization:</span>
+              <span style={infoValueStyle}>{doctor.Specialization}</span>
+            </div>
+            
+            <div style={infoItemStyle}>
+              <span style={infoLabelStyle}>Rating:</span>
+              <span style={{...infoValueStyle, display: 'flex', alignItems: 'center'}}>
+                <span style={{color: '#f1c40f', marginRight: '4px'}}>★</span> 
+                {doctor.Rating}
+              </span>
+            </div>
+            
+            <div style={infoItemStyle}>
+              <span style={infoLabelStyle}>Fees:</span>
+              <span style={infoValueStyle}><strong>PKR {doctor.Fees}</strong></span>
+            </div>
+            
+            <div style={infoItemStyle}>
+              <span style={infoLabelStyle}>Experience:</span>
+              <span style={infoValueStyle}>{doctor.Experience} years</span>
+            </div>
+            
+            <div style={infoItemStyle}>
+              <span style={infoLabelStyle}>Availability: </span>
+              <span style={{
+                ...infoValueStyle,
+                backgroundColor: doctor.Presence ? '#e3fcef' : '#fff5f5',
+                color: doctor.Presence? '#1e824c' : '#e53e3e',
+                padding: '4px 10px',
+                borderRadius: '12px',
+                fontSize: '14px'
+              }}>
+                {doctor.Presence? 'Available' : 'Not Available'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div style={{ marginBottom: '40px' }}>
-        <h3>Check Availability</h3>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <div>
-            <label htmlFor="appointmentDate" style={{ display: 'block', marginBottom: '5px' }}>
+      <div style={cardStyle}>
+        <h3 style={sectionTitleStyle}>Schedule Appointment</h3>
+        
+        <form onSubmit={handleSubmit} style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          gap: '20px', 
+          alignItems: 'flex-end',
+          marginTop: '20px'
+        }}>
+          <div style={{ flex: '1', minWidth: '250px' }}>
+            <label htmlFor="appointmentDate" style={{ 
+              display: 'block', 
+              marginBottom: '8px',
+              fontWeight: '500',
+              color: '#4a5568'
+            }}>
               Select Date:
             </label>
             <input
@@ -171,57 +398,93 @@ const DoctorDetailPage = () => {
               value={selectedDate}
               onChange={handleDateChange}
               min={new Date().toISOString().split('T')[0]}
-              style={{
-                padding: '8px',
-                borderRadius: '4px',
-                border: dateError ? '1px solid red' : '1px solid #ddd'
-              }}
+              style={dateSelectorStyle}
             />
-            {dateError && <p style={{ color: 'red', margin: '5px 0 0', fontSize: '14px' }}>{dateError}</p>}
+            {dateError && (
+              <p style={{ 
+                color: '#e74c3c', 
+                margin: '8px 0 0', 
+                fontSize: '14px' 
+              }}>
+                {dateError}
+              </p>
+            )}
           </div>
+          
           <button 
             type="submit"
             disabled={isFetchingSlots}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: isFetchingSlots ? '#cccccc' : '#4e73df',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isFetchingSlots ? 'not-allowed' : 'pointer',
-              marginTop: '22px'
+            style={checkButtonStyle}
+            onMouseOver={(e) => {
+              if (!isFetchingSlots) e.currentTarget.style.backgroundColor = '#2980b9';
+            }}
+            onMouseOut={(e) => {
+              if (!isFetchingSlots) e.currentTarget.style.backgroundColor = '#3498db';
             }}
           >
-            {isFetchingSlots ? 'Loading...' : 'Check Slots'}
+            {isFetchingSlots ? 'Loading...' : 'Check Available Slots'}
           </button>
         </form>
       </div>
 
       {isFetchingSlots ? (
-        <p>Loading available time slots...</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '30px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+          marginBottom: '30px'
+        }}>
+          <div style={{
+            display: 'inline-block',
+            width: '20px',
+            height: '20px',
+            border: '3px solid rgba(0,0,0,0.1)',
+            borderTopColor: '#3498db',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            marginRight: '10px'
+          }}></div>
+          Loading available time slots...
+        </div>
       ) : timeSlots.length > 0 ? (
-        <div>
-          <h3>Available Time Slots</h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-            gap: '15px',
-            marginTop: '20px'
-          }}>
+        <div style={cardStyle}>
+          <h3 style={sectionTitleStyle}>Available Time Slots</h3>
+          <p style={{ color: '#64748b', marginBottom: '20px' }}>
+            Select a time slot for your appointment with Dr. {doctor.DocName} on {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+          
+          <div style={timeSlotsGridStyle}>
             {timeSlots.map((slot) => (
               <div 
                 key={slot.TimeSlotID}
                 onClick={() => handleSlotClick(slot)}
                 style={{
                   padding: '15px',
-                  border: selectedSlot?.TimeSlotID === slot.TimeSlotID ? '2px solid #4e73df' : '1px solid #e0e0e0',
+                  border: selectedSlot?.TimeSlotID === slot.TimeSlotID ? '2px solid #3498db' : '1px solid #e2e8f0',
                   borderRadius: '8px',
-                  backgroundColor: slot.isBooked === 1 ? '#f0f0f0' : 
-                                  selectedSlot?.TimeSlotID === slot.TimeSlotID ? '#e2e6f7' : '#f8f9fa',
+                  backgroundColor: slot.isBooked === 1 ? '#f8fafc' : 
+                                  selectedSlot?.TimeSlotID === slot.TimeSlotID ? '#e3f2fd' : 'white',
                   cursor: slot.isBooked === 1 ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
+                  transition: 'all 0.2s ease',
                   opacity: slot.isBooked === 1 ? 0.7 : 1,
-                  position: 'relative'
+                  position: 'relative',
+                  boxShadow: selectedSlot?.TimeSlotID === slot.TimeSlotID ? '0 0 0 2px rgba(52, 152, 219, 0.3)' : 'none'
+                }}
+                onMouseOver={(e) => {
+                  if (slot.isBooked !== 1) {
+                    e.currentTarget.style.backgroundColor = selectedSlot?.TimeSlotID === slot.TimeSlotID ? '#e3f2fd' : '#f8fafc';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (slot.isBooked !== 1) {
+                    e.currentTarget.style.backgroundColor = selectedSlot?.TimeSlotID === slot.TimeSlotID ? '#e3f2fd' : 'white';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = selectedSlot?.TimeSlotID === slot.TimeSlotID ? '0 0 0 2px rgba(52, 152, 219, 0.3)' : 'none';
+                  }
                 }}
               >
                 {slot.isBooked === 1 && (
@@ -232,51 +495,92 @@ const DoctorDetailPage = () => {
                     backgroundColor: '#e74c3c',
                     color: 'white',
                     borderRadius: '4px',
-                    padding: '2px 5px',
-                    fontSize: '12px'
+                    padding: '2px 8px',
+                    fontSize: '12px',
+                    fontWeight: '500'
                   }}>
                     Booked
                   </div>
                 )}
                 <p style={{ 
                   margin: 0, 
-                  fontWeight: '500',
-                  color: slot.isBooked === 1 ? '#777' : '#333'
+                  fontWeight: '600',
+                  color: slot.isBooked === 1 ? '#a0aec0' : '#2d3748',
+                  fontSize: '16px',
+                  textAlign: 'center'
                 }}>
                   {slot.TimeSlot}
                 </p>
                 <p style={{ 
-                  margin: '5px 0 0', 
-                  color: slot.isBooked === 1 ? '#999' : '#666', 
-                  fontSize: '14px'
+                  margin: '8px 0 0', 
+                  color: slot.isBooked === 1 ? '#cbd5e0' : '#718096', 
+                  fontSize: '13px',
+                  textAlign: 'center'
                 }}>
-                  Status: {slot.Status || (slot.isBooked === 1 ? 'Booked' : 'Available')}
+                  {slot.isBooked === 1 ? 'Already Booked' : 'Available'}
                 </p>
               </div>
             ))}
           </div>
         </div>
       ) : selectedDate && !dateError ? (
-        <p>No available time slots for this date.</p>
+        <div style={{
+          padding: '30px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+          marginBottom: '30px',
+          textAlign: 'center',
+          color: '#64748b'
+        }}>
+          <div style={{ fontSize: '40px', marginBottom: '15px' }}>📅</div>
+          <p style={{ fontSize: '16px' }}>No available time slots for this date.</p>
+          <p style={{ fontSize: '14px' }}>Please try selecting a different date.</p>
+        </div>
       ) : null}
 
       {selectedSlot && (
-        <div style={{ marginTop: '30px' }}>
+        <div style={{
+          textAlign: 'center',
+          marginTop: '30px',
+          padding: '25px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+          marginBottom: '30px'
+        }}>
+          <p style={{ 
+            fontSize: '16px', 
+            marginBottom: '20px',
+            color: '#4a5568'
+          }}>
+            You've selected the {selectedSlot.TimeSlot} slot on {new Date(selectedDate).toLocaleDateString()}
+          </p>
+          
           <button 
             onClick={handleBooking}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#1cc88a',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
+            style={bookButtonStyle}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#27ae60';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#2ecc71';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            Book Appointment
+            Confirm Booking
           </button>
+          
           {bookingMessage && (
-            <p style={{ marginTop: '10px', color: bookingMessage.includes('success') ? 'green' : 'red' }}>
+            <p style={{ 
+              marginTop: '15px', 
+              padding: '10px 15px',
+              borderRadius: '6px',
+              backgroundColor: bookingMessage.includes('success') ? '#e3fcef' : '#fff5f5',
+              color: bookingMessage.includes('success') ? '#1e824c' : '#e53e3e',
+              display: 'inline-block'
+            }}>
               {bookingMessage}
             </p>
           )}
@@ -285,16 +589,15 @@ const DoctorDetailPage = () => {
 
       <button 
         onClick={() => navigate(-1)}
-        style={{
-          marginTop: '40px',
-          padding: '10px 20px',
-          backgroundColor: '#f8f9fa',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          cursor: 'pointer'
+        style={backButtonStyle}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = '#edf2f7';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = '#f8f9fc';
         }}
       >
-        ← Back to Previous Page
+        <span style={{ fontSize: '18px' }}>←</span> Back to Previous Page
       </button>
     </div>
   );

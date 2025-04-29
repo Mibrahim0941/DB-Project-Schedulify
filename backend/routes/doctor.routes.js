@@ -128,6 +128,9 @@ router.get('/searchDoctors', async (req, res) => {
                 D.DocName,
                 D.Specialization,
                 D.Rating,
+                D.DocPFP,
+                D.Fees,
+                D.Experience,
                 Dept.DeptName
             FROM Doctors D
             JOIN Departments Dept ON D.DeptID = Dept.DeptID

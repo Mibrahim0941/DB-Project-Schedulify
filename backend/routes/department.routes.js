@@ -35,7 +35,7 @@ router.get('/doctorsByDepartment', async (req, res) => {
 
         const request = new sql.Request();
         const result = await request.query(`
-            SELECT DocID, DocName, Specialization, Rating, Fees, Experience, Presence 
+            SELECT DocID, DocName, Specialization, Rating, Fees, Experience, Presence , DocPFP
             FROM Doctors 
             WHERE DeptID = ${DeptID}
         `);

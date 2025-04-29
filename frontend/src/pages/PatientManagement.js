@@ -174,7 +174,7 @@ const PatientSummary = () => {
         </div>
         <div style={styles.statCard}>
           <h3 style={styles.statTitle}>Total Revenue</h3>
-          <p style={styles.statValue}>${totalRevenue.toLocaleString()}</p>
+          <p style={styles.statValue}>PKR {totalRevenue.toLocaleString()}</p>
         </div>
       </div>
 
@@ -204,7 +204,7 @@ const PatientSummary = () => {
               <div style={styles.detailRow}>
                 <FaMoneyBillWave style={styles.detailIcon} />
                 <span style={styles.detailValue}>
-                  ${patient.totalPayments.toLocaleString()}
+                  PKR {patient.totalPayments.toLocaleString()}
                 </span>
               </div>
             </div>
