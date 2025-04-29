@@ -135,7 +135,7 @@ const AdminDashboard = () => {
                         <button
                             onClick={() => {
                                 localStorage.removeItem('adminToken');
-                                navigate('/admin');
+                                navigate('/login');
                             }}
                             style={{
                                 display: 'flex',
