@@ -43,61 +43,61 @@ router.post('/bookLabTest', async (req, res) => {
 });
 
 //lab test revenue analysis
-router.get('/labTestRevenueAnalysis', async (req, res) => {
-    try {
-        const request = new sql.Request();
+// router.get('/labTestRevenueAnalysis', async (req, res) => {
+//     try {
+//         const request = new sql.Request();
         
-        const result = await request.query('SELECT * FROM LabTestRevenueAnalysis');
-        res.json(result.recordset);
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+//         const result = await request.query('SELECT * FROM LabTestRevenueAnalysis');
+//         res.json(result.recordset);
+//     } catch (error) {
+//         console.error('Database error:', error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 //lab test revenue by location
-router.get('/labTestRevenueByLocation', async (req, res) => {
-    try {
-        const { city, startDate, endDate } = req.query;
+// router.get('/labTestRevenueByLocation', async (req, res) => {
+//     try {
+//         const { city, startDate, endDate } = req.query;
         
-        const request = new sql.Request();
+//         const request = new sql.Request();
         
-        request.input('City', sql.VarChar(100), city || null);
-        request.input('StartDate', sql.Date, startDate || null);
-        request.input('EndDate', sql.Date, endDate || null);
+//         request.input('City', sql.VarChar(100), city || null);
+//         request.input('StartDate', sql.Date, startDate || null);
+//         request.input('EndDate', sql.Date, endDate || null);
         
-        const result = await request.execute('GetLabTestRevenueByLocation');
-        res.json(result.recordset);
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+//         const result = await request.execute('GetLabTestRevenueByLocation');
+//         res.json(result.recordset);
+//     } catch (error) {
+//         console.error('Database error:', error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
-//revenue made by one lab test
-router.get('/labTestRevenue', async (req, res) => {
-    try {
-        const { TestID } = req.query;
+// //revenue made by one lab test
+// router.get('/labTestRevenue', async (req, res) => {
+//     try {
+//         const { TestID } = req.query;
         
-        if (!TestID) return res.status(400).json({ error: 'Test ID is required' });
+//         if (!TestID) return res.status(400).json({ error: 'Test ID is required' });
 
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT 
-                LT.TestID, LT.TestName,
-                COUNT(TA.TestAptID) as TestCount,
-                SUM(LT.Price) as TotalRevenue
-            FROM LabTests LT
-            LEFT JOIN TestAppointments TA ON LT.TestID = TA.TestID
-            WHERE LT.TestID = ${TestID}
-            GROUP BY LT.TestID, LT.TestName
-        `);
+//         const request = new sql.Request();
+//         const result = await request.query(`
+//             SELECT 
+//                 LT.TestID, LT.TestName,
+//                 COUNT(TA.TestAptID) as TestCount,
+//                 SUM(LT.Price) as TotalRevenue
+//             FROM LabTests LT
+//             LEFT JOIN TestAppointments TA ON LT.TestID = TA.TestID
+//             WHERE LT.TestID = ${TestID}
+//             GROUP BY LT.TestID, LT.TestName
+//         `);
         
-        res.json(result.recordset[0] || {});
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+//         res.json(result.recordset[0] || {});
+//     } catch (error) {
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 //cancel lab test   
 router.put('/cancelLabTest', async (req, res) => {

@@ -113,19 +113,19 @@ USE Schedulify;
 	);
 
     -- LAB TECHNICIANS TABLE
-    CREATE TABLE LabTechnicians (
-        TechID int IDENTITY(1,1) PRIMARY KEY,
-        TechName varchar(255),
-        TechEmail varchar(255) UNIQUE CHECK (
-			PATINDEX('%_%@_%._%', TechEmail) > 0  -- Ensures an '@' and '.' exist in the right places
-			AND TechEmail NOT LIKE '%@%@%'        -- Prevents multiple '@' symbols
-			AND TechEmail NOT LIKE '%.@%'         -- Prevents invalid ".@" sequences
-			AND TechEmail NOT LIKE '%..%'         -- Prevents consecutive dots ".."
-		),
-		Experience float,
-        Specialization varchar(255),
-        TechPFP varchar(255)
-    );
+  --  CREATE TABLE LabTechnicians (
+  --      TechID int IDENTITY(1,1) PRIMARY KEY,
+  --      TechName varchar(255),
+  --      TechEmail varchar(255) UNIQUE CHECK (
+		--	PATINDEX('%_%@_%._%', TechEmail) > 0  -- Ensures an '@' and '.' exist in the right places
+		--	AND TechEmail NOT LIKE '%@%@%'        -- Prevents multiple '@' symbols
+		--	AND TechEmail NOT LIKE '%.@%'         -- Prevents invalid ".@" sequences
+		--	AND TechEmail NOT LIKE '%..%'         -- Prevents consecutive dots ".."
+		--),
+		--Experience float,
+  --      Specialization varchar(255),
+  --      TechPFP varchar(255)
+  --  );
     
     -- LAB TESTS TABLE
     CREATE TABLE LabTests (
@@ -136,16 +136,16 @@ USE Schedulify;
 		BasePrice INT NOT NULL
     );
 
-	CREATE TABLE LabTestRevenue (
-    RevenueID INT IDENTITY(1,1) PRIMARY KEY,
-    TestID INT FOREIGN KEY REFERENCES LabTests(TestID),
-    TestDate DATE DEFAULT GETDATE(),
-    PatientCity VARCHAR(100),
-    ActualPrice INT,
-    BasePrice INT,
-    LocationSurcharge INT,
-    PatientID INT FOREIGN KEY REFERENCES Patients(PtID)
-	);
+	--CREATE TABLE LabTestRevenue (
+ --   RevenueID INT IDENTITY(1,1) PRIMARY KEY,
+ --   TestID INT FOREIGN KEY REFERENCES LabTests(TestID),
+ --   TestDate DATE DEFAULT GETDATE(),
+ --   PatientCity VARCHAR(100),
+ --   ActualPrice INT,
+ --   BasePrice INT,
+ --   LocationSurcharge INT,
+ --   PatientID INT FOREIGN KEY REFERENCES Patients(PtID)
+	--);
   
     -- TEST TIME SLOTS TABLE
     CREATE TABLE TestTimeSlots (
@@ -790,14 +790,14 @@ ORDER BY A.AptDate, S.TimeSlot;
 ------------------------revenue made by one Lab test------------------------------------
 
 
-SELECT 
-    LT.TestID, LT.TestName,
-    COUNT(TA.TestAptID) as TestCount,
-    SUM(LT.Price) as TotalRevenue
-FROM LabTests LT
-LEFT JOIN TestAppointments TA ON LT.TestID = TA.TestID
-WHERE LT.TestID = @TestID
-GROUP BY LT.TestID, LT.TestName;
+--SELECT 
+--    LT.TestID, LT.TestName,
+--    COUNT(TA.TestAptID) as TestCount,
+--    SUM(LT.Price) as TotalRevenue
+--FROM LabTests LT
+--LEFT JOIN TestAppointments TA ON LT.TestID = TA.TestID
+--WHERE LT.TestID = @TestID
+--GROUP BY LT.TestID, LT.TestName;
 
 ------------------------lab test appointments for a specific patient------------------------------------
 
@@ -819,111 +819,111 @@ ORDER BY TA.AptDate DESC;
 
 
 -- Add this after the other stored procedures
-GO
-CREATE OR ALTER PROCEDURE CalculateLabTestRevenue
-    @TestID INT,
-    @PatientID INT,
-    @TestDate DATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        DECLARE @BasePrice INT;
-        DECLARE @PatientCity VARCHAR(100);
-        DECLARE @TestCity VARCHAR(100);
-        DECLARE @LocationSurcharge INT;
-        DECLARE @ActualPrice INT;
+--GO
+--CREATE OR ALTER PROCEDURE CalculateLabTestRevenue
+--    @TestID INT,
+--    @PatientID INT,
+--    @TestDate DATE
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
+--    BEGIN TRY
+--        DECLARE @BasePrice INT;
+--        DECLARE @PatientCity VARCHAR(100);
+--        DECLARE @TestCity VARCHAR(100);
+--        DECLARE @LocationSurcharge INT;
+--        DECLARE @ActualPrice INT;
 
-        -- Get base price and test city
-        SELECT @BasePrice = BasePrice, @TestCity = City
-        FROM LabTests
-        WHERE TestID = @TestID;
+--        -- Get base price and test city
+--        SELECT @BasePrice = BasePrice, @TestCity = City
+--        FROM LabTests
+--        WHERE TestID = @TestID;
 
-        -- Get patient's city
-        SELECT @PatientCity = PtCity
-        FROM Patients
-        WHERE PtID = @PatientID;
+--        -- Get patient's city
+--        SELECT @PatientCity = PtCity
+--        FROM Patients
+--        WHERE PtID = @PatientID;
 
-        -- Calculate location surcharge (example: 10% if different city)
-        IF @PatientCity != @TestCity
-            SET @LocationSurcharge = @BasePrice * 0.10;
-        ELSE
-            SET @LocationSurcharge = 0;
+--        -- Calculate location surcharge (example: 10% if different city)
+--        IF @PatientCity != @TestCity
+--            SET @LocationSurcharge = @BasePrice * 0.10;
+--        ELSE
+--            SET @LocationSurcharge = 0;
 
-        -- Calculate actual price
-        SET @ActualPrice = @BasePrice + @LocationSurcharge;
+--        -- Calculate actual price
+--        SET @ActualPrice = @BasePrice + @LocationSurcharge;
 
-        -- Record the revenue
-        INSERT INTO LabTestRevenue (
-            TestID, 
-            TestDate, 
-            PatientCity, 
-            ActualPrice, 
-            BasePrice, 
-            LocationSurcharge, 
-            PatientID
-        )
-        VALUES (
-            @TestID,
-            @TestDate,
-            @PatientCity,
-            @ActualPrice,
-            @BasePrice,
-            @LocationSurcharge,
-            @PatientID
-        );
+--        -- Record the revenue
+--        INSERT INTO LabTestRevenue (
+--            TestID, 
+--            TestDate, 
+--            PatientCity, 
+--            ActualPrice, 
+--            BasePrice, 
+--            LocationSurcharge, 
+--            PatientID
+--        )
+--        VALUES (
+--            @TestID,
+--            @TestDate,
+--            @PatientCity,
+--            @ActualPrice,
+--            @BasePrice,
+--            @LocationSurcharge,
+--            @PatientID
+--        );
 
-        -- Return the price details
-        SELECT 
-            @BasePrice AS BasePrice,
-            @LocationSurcharge AS LocationSurcharge,
-            @ActualPrice AS ActualPrice;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
+--        -- Return the price details
+--        SELECT 
+--            @BasePrice AS BasePrice,
+--            @LocationSurcharge AS LocationSurcharge,
+--            @ActualPrice AS ActualPrice;
+--    END TRY
+--    BEGIN CATCH
+--        THROW;
+--    END CATCH
+--END;
 
--- Add a view for revenue analysis
-GO
-CREATE OR ALTER VIEW LabTestRevenueAnalysis AS
-SELECT 
-    LT.TestName,
-    LT.TestCategory,
-    LT.City AS TestLocation,
-    COUNT(LTR.RevenueID) AS TotalTests,
-    SUM(LTR.ActualPrice) AS TotalRevenue,
-    AVG(LTR.LocationSurcharge) AS AvgLocationSurcharge,
-    COUNT(DISTINCT LTR.PatientCity) AS UniquePatientCities
-FROM LabTests LT
-LEFT JOIN LabTestRevenue LTR ON LT.TestID = LTR.TestID
-GROUP BY LT.TestID, LT.TestName, LT.TestCategory, LT.City;
+---- Add a view for revenue analysis
+--GO
+--CREATE OR ALTER VIEW LabTestRevenueAnalysis AS
+--SELECT 
+--    LT.TestName,
+--    LT.TestCategory,
+--    LT.City AS TestLocation,
+--    COUNT(LTR.RevenueID) AS TotalTests,
+--    SUM(LTR.ActualPrice) AS TotalRevenue,
+--    AVG(LTR.LocationSurcharge) AS AvgLocationSurcharge,
+--    COUNT(DISTINCT LTR.PatientCity) AS UniquePatientCities
+--FROM LabTests LT
+--LEFT JOIN LabTestRevenue LTR ON LT.TestID = LTR.TestID
+--GROUP BY LT.TestID, LT.TestName, LT.TestCategory, LT.City;
 
--- Add a stored procedure to get revenue by location
-GO
-CREATE OR ALTER PROCEDURE GetLabTestRevenueByLocation
-    @City VARCHAR(100) = NULL,
-    @StartDate DATE = GETDATE,
-    @EndDate DATE = GETDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
+---- Add a stored procedure to get revenue by location
+--GO
+--CREATE OR ALTER PROCEDURE GetLabTestRevenueByLocation
+--    @City VARCHAR(100) = NULL,
+--    @StartDate DATE = GETDATE,
+--    @EndDate DATE = GETDATE
+--AS
+--BEGIN
+--    SET NOCOUNT ON;
     
-    SELECT 
-        LT.TestName,
-        LT.TestCategory,
-        LTR.PatientCity,
-        COUNT(LTR.RevenueID) AS TestCount,
-        SUM(LTR.ActualPrice) AS TotalRevenue,
-        AVG(LTR.LocationSurcharge) AS AvgLocationSurcharge
-    FROM LabTestRevenue LTR
-    JOIN LabTests LT ON LTR.TestID = LT.TestID
-    WHERE (@City IS NULL OR LTR.PatientCity = @City)
-    AND (@StartDate IS NULL OR LTR.TestDate >= @StartDate)
-    AND (@EndDate IS NULL OR LTR.TestDate <= @EndDate)
-    GROUP BY LT.TestName, LT.TestCategory, LTR.PatientCity
-    ORDER BY TotalRevenue DESC;
-END;
+--    SELECT 
+--        LT.TestName,
+--        LT.TestCategory,
+--        LTR.PatientCity,
+--        COUNT(LTR.RevenueID) AS TestCount,
+--        SUM(LTR.ActualPrice) AS TotalRevenue,
+--        AVG(LTR.LocationSurcharge) AS AvgLocationSurcharge
+--    FROM LabTestRevenue LTR
+--    JOIN LabTests LT ON LTR.TestID = LT.TestID
+--    WHERE (@City IS NULL OR LTR.PatientCity = @City)
+--    AND (@StartDate IS NULL OR LTR.TestDate >= @StartDate)
+--    AND (@EndDate IS NULL OR LTR.TestDate <= @EndDate)
+--    GROUP BY LT.TestName, LT.TestCategory, LTR.PatientCity
+--    ORDER BY TotalRevenue DESC;
+--END;
 
 
 
@@ -1070,7 +1070,6 @@ BEGIN
         -- Insert new lab test
         INSERT INTO LabTests (TestName, TestCategory, BasePrice, City)
         VALUES (@TestName, @TestCategory, @BasePrice, @City);
-        
         SELECT 'Lab test added successfully!' AS Message;
     END TRY
     BEGIN CATCH
@@ -1120,6 +1119,8 @@ SELECT * FROM LabTechnicians;
 SELECT * FROM LabTests;
 SELECT * FROM TestTimeSlots;
 SELECT * FROM TestAppointments;
+Select * from Admins
+Select * from AdminPasswords
 
 SELECT 
                 'Appointment' as Type,
