@@ -301,14 +301,6 @@ const AdminDashboard = () => {
                             color="#9f7aea" 
                             onClick={() => navigate('/admin/Doctor')}
                         />
-                        {/* Manage Revenue */}
-                        <ActionCard 
-                            icon={<FaMoneyBillWave />} 
-                            title="Manage Revenue" 
-                            desc="View financial reports and analytics" 
-                            color="#805ad5" 
-                            onClick={() => navigate('/admin/Revenue')}
-                        />
                         {/* New: Manage Patients */}
                         <ActionCard 
                             icon={<FaUserShield />} 
