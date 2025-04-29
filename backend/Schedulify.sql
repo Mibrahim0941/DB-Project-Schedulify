@@ -1102,6 +1102,27 @@ BEGIN
     END CATCH
 END;
 
+--slots for test
+CREATE OR ALTER TRIGGER trg_AddDefaultTimeSlotsForLabTest
+ON LabTests
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @TestID INT;
+    
+    SELECT @TestID = TestID FROM inserted;
+    
+    -- Insert the three default time slots
+    INSERT INTO TestTimeSlots (TestID, TimeSlot)
+    VALUES 
+        (@TestID, '2:00-3:00'),
+        (@TestID, '4:00-5:00'),
+        (@TestID, '10:00-11:00');
+    
+    PRINT 'Default time slots added for new lab test.';
+END;
 
 SeLECT * FrOM LabTestRevenue
 delete from LabTestRevenue
