@@ -523,7 +523,7 @@ const DoctorDashboard = () => {
               <FaEnvelope /> Contact Information
             </h3>
             <DetailItem icon={<FaEnvelope />} label="Email" value={doctorInfo.DocEmail} />
-            <DetailItem icon={<FaMapMarkerAlt />} label="Location" value={`${doctorInfo.City}, ${doctorInfo.Country}`} />
+            <DetailItem icon={<FaMapMarkerAlt />} label="Location" value={`${doctorInfo.DocCity}, ${doctorInfo.DocCountry}`} />
           </div>
 
           {/* Availability Information */}
