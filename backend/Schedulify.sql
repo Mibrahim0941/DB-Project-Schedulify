@@ -104,7 +104,7 @@ USE Schedulify;
     --Patient PASSWORDS TABLE
     CREATE TABLE PtPasswords(
         PassID int PRIMARY KEY IDENTITY(1,1),
-        UserID int FOREIGN KEY REFERENCES Patients(PtID) ON DELETE CASCADE,
+        UserID int UNIQUE FOREIGN KEY REFERENCES Patients(PtID) ON DELETE CASCADE,
         Pass varbinary(64) NOT NULL 
 	);
     
@@ -112,7 +112,7 @@ USE Schedulify;
 	--Doctor PASSWORDS TABLE
 	CREATE TABLE DocPasswords(
         PassID int PRIMARY KEY IDENTITY(1,1),
-        UserID int FOREIGN KEY REFERENCES Doctors(DocID) ON DELETE CASCADE,
+        UserID int UNIQUE FOREIGN KEY REFERENCES Doctors(DocID) ON DELETE CASCADE,
         Pass varbinary(64) NOT NULL 
 	);
 
@@ -199,7 +199,7 @@ USE Schedulify;
 	-- Admin passwords table
 	CREATE TABLE AdminPasswords (
     PassID int PRIMARY KEY IDENTITY(1,1),
-    AdminID int FOREIGN KEY REFERENCES Admins(AdminID) ON DELETE CASCADE,
+    AdminID int UNIQUE FOREIGN KEY REFERENCES Admins(AdminID) ON DELETE CASCADE,
     PassHash varbinary(64) NOT NULL,
 	);
 --------------------------------------------------------------------------------------------
