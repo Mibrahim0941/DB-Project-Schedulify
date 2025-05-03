@@ -85,6 +85,10 @@ USE Schedulify;
 	ALTER TABLE timeslots
 	ADD DocID int FOREIGN KEY REFERENCES Doctors(DocID) ON DELETE CASCADE ON UPDATE CASCADE
 
+    ALTER TABLE timeslots
+    ADD CONSTRAINT UQ_DocTime UNIQUE (DocID, TimeSlot);
+
+
 
  -- APPOINTMENTS TABLE
     CREATE TABLE Appointments(
@@ -130,7 +134,7 @@ USE Schedulify;
     -- LAB TESTS TABLE
     CREATE TABLE LabTests (
         TestID int IDENTITY(1,1) PRIMARY KEY,
-        TestName varchar(255),
+        TestName varchar(255) UNIQUE,
         TestCategory varchar(255),
 		City VARCHAR(100) NOT NULL DEFAULT 'Lahore',
 		BasePrice INT NOT NULL
@@ -153,6 +157,9 @@ USE Schedulify;
         TestID int FOREIGN KEY REFERENCES LabTests(TestID),
         TimeSlot varchar(100),
     );
+
+    ALTER TABLE TestTimeSlots
+    ADD CONSTRAINT UQ_TestTime UNIQUE (TestID, TimeSlot)
     
     -- TEST APPOINTMENTS TABLE
     CREATE TABLE TestAppointments (
