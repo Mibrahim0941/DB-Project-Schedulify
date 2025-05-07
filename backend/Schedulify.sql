@@ -167,7 +167,7 @@ USE Schedulify;
         AptDate Date,
         PtID int FOREIGN KEY REFERENCES Patients(PtID) ON DELETE CASCADE,
         TestID int FOREIGN KEY REFERENCES LabTests(TestID) ON DELETE CASCADE,
-        TechID int FOREIGN KEY REFERENCES LabTechnicians(TechID) ON DELETE SET NULL,
+        --TechID int FOREIGN KEY REFERENCES LabTechnicians(TechID) ON DELETE SET NULL,
         SlotID int FOREIGN KEY REFERENCES TestTimeSlots(SlotID) ON DELETE SET NULL,
 		Status varchar(50) DEFAULT 'Scheduled'
     );
